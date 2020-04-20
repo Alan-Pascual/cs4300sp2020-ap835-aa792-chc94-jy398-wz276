@@ -152,7 +152,7 @@ def search():
 
 			items = []
 			for anime in info_anime:
-				an_item = dict(name=anime[0],description=anime[1],picture=anime[2],video=[3])
+				an_item = dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3])
 				items.append(an_item)
 			
 	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=items)
