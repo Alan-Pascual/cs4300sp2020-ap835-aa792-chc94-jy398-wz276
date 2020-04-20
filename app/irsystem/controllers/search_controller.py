@@ -15,6 +15,7 @@ def createModel(file):
 	with open(file) as f:
     		raw_docs = json.loads(f.readlines()[0])
 		
+	documents = []
 	for anime in raw_docs["shows"]:
 		reviews = ""
 		for review in anime['reviews']:
