@@ -143,7 +143,7 @@ def search():
 		videos = []
 		output_message = ''
 	else:
-		output_message = "Your search: " + query + " (this will be replaced with anime)"
+		output_message = "Your search: " + query
 		
 		closestAnime = getAnimeList(query, gameList)
 		if closestAnime == "XD?":
