@@ -4,6 +4,7 @@ from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 
 # Libraries for Search
 import numpy as np
+import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse.linalg import svds
 from sklearn.preprocessing import normalize
@@ -25,7 +26,7 @@ def createModel(file):
 	np.random.shuffle(documents)
 	return documents
 	
-documents = createModel('anime_data1.json')
+documents = createModel('.'+os.path.sep+'anime_data1.json')
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
