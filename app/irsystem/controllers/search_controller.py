@@ -151,10 +151,10 @@ def search():
 				info_anime.append(getAnimeInfo(anime))
 
 			data = [x[0] for x in info_anime]
-			description = [x[1] for x in info_anime]
+			descriptions = [x[1] for x in info_anime]
 			pictures = [x[2] for x in info_anime]
 			videos = [x[3] for x in info_anime]
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, descriptions=descriptions, pictures=pictures, videos=videos)
 
 
 
