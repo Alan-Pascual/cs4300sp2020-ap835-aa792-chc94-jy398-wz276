@@ -5,6 +5,7 @@ from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 # Libraries for Search
 import numpy as np
 import os
+import sys
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse.linalg import svds
 from sklearn.preprocessing import normalize
@@ -30,6 +31,9 @@ def createModel(file):
     return documents
 
 documents = createModel('.'+os.path.sep+'anime_data1.json')
+
+print("JSON Loaded")
+
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
@@ -54,6 +58,8 @@ def closest_project_to_word(word_in, k = 5):
     asort = np.argsort(-sims)[:k+1]
     return [(documents[i][0], sims[i]/sims[asort[0]]) for i in asort[1:]]
 
+print("Model Trained")
+
 def getGames():
     url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
     r = requests.get(url)
@@ -65,6 +71,15 @@ def getGames():
         tupleList[i] = tuple([int(app['appid']), str(app['name'])])
 
     return tupleList
+
+gameList = None
+while True:
+    gameList = getGames() #Run this only once please
+    if len(gameList) > 0:
+        print("gameList Loaded", len(gameList))
+        break
+    else:
+        print("Gamelist is NOT populated, trying again", len(gameList))
 
 def getSimilarNames(gamesList, query : str):
     similarNames = []
@@ -82,26 +97,42 @@ def getSimilarNames(gamesList, query : str):
 def remove_tags(text):
     return TAG_RE.sub('', text)
 
-def getGamesDesciription(id):
+def getGamesDescription(id):
     url = "https://store.steampowered.com/api/appdetails?appids=" + str(id)
     r = requests.get(url)
     data = r.json()
-    appList = data[str(id)]['data']['detailed_description']
-    
-    return remove_tags(appList)
+    if (data[str(id)]['success']):
+        if data[str(id)]['data']['type'] == 'game':
+            return remove_tags(data[str(id)]['data']['detailed_description'])
+        else:
+            return "Not Valid"
+    else:
+        return "Not Valid"
 
 def getAnimeList(game, gameList, id=False):
+    desc = ""
+    gameName = ""
     if id:
-        gameID = game
+        desc = getGamesDescription(game)
+        gameName = "You entered the ID so you know this"
     else:
-        gameID = getSimilarNames(gameList, game)
-    if len(gameID) == 0:
-        return "XD?", "No Game Found"
-    else:
-        gameName = gameID[0][1]
-        gameID = gameID[0][0]
-    desc = getGamesDesciription(gameID)
+        gameIDs = getSimilarNames(gameList, game)
+        #print(gameIDs)
+        if len(gameIDs) == 0:
+            return "No Game Found", "No Game Name"
+        else:
+            for ID in gameIDs:
+                output = getGamesDescription(ID[0])
+                if output == "Not Valid":
+                    continue
+                else:
+                    desc = output
+                    gameName = ID[1]
+                    break
     
+    if desc == "":
+        return "No Game Found", "No Game Name"
+        
     animeList = []
     
     #Tokenize the Description
@@ -131,8 +162,10 @@ def getAnimeInfo(AnimeName):
             record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0]]
             break
     return record
-
-gameList = getGames()
+    
+print("All methods and data has been loaded sucessfully:")
+print("JSON Anime:", len(documents))
+print("Steam Games:", len(gameList))
 
 @irsystem.route('/', methods=['GET'])
 def search():
@@ -145,7 +178,7 @@ def search():
             closestAnime, gameName = getAnimeList(query, gameList)
             output_message = gameName
 
-            if closestAnime == "XD?":
+            if closestAnime == "No Game Found":
                 data = []
                 output_message = "Could not find game on Steam"
             else:
@@ -157,6 +190,7 @@ def search():
                 for anime in info_anime:
                     data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3]))
         except:
+            print("Unexpected error:", sys.exc_info())
             data = []
             output_message = "Something went wrong, try another query"
 
