@@ -138,6 +138,9 @@ def search():
 	query = request.args.get('search')
 	if not query:
 		data = []
+		descriptions = []
+		pictures = []
+		videos = []
 		output_message = ''
 	else:
 		output_message = "Your search: " + query + " (this will be replaced with anime)"
