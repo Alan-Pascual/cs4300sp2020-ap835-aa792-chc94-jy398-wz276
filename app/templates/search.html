@@ -36,10 +36,22 @@
         <form class="form-inline global-search">
         {% if data %}
             <h1>{{output_message}}</h1>
-            {% for d in data %}  
-                <br>
-                <p>{{d}}</p>
-            {% endfor %}
+                <table>
+                {% for item in data %}
+                <TR>
+                <TD class="c1"><IMG src=item.picture></TD>
+                <TD class="c2"><p>{{item.name}}</p>
+                    <br>
+                    <p>{{item.description}}</p>
+                </TD>
+                <TD class="c3">
+                    <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                    </iframe>
+                </TD>
+                </TR>
+                {% endfor %}
+                </table>
+                <br>           
         {% endif %}
         </form>
     </body>
