@@ -11,60 +11,60 @@ from sklearn.preprocessing import normalize
 import re
 import requests
 
-project_name = "Culture for Quarantined Gamers: Anime Recommendations Based on Game Preferences"
+project_name = "Games2Anime: Anime Recommendations Based on Game Preferences"
 net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffrey Yao (jy398), Wenjia Zhang (wz276)"
 TAG_RE = re.compile(r'<[^>]+>')
 
 def createModel(file):
-	with open(file) as f:
-    		raw_docs = json.loads(f.readlines()[0])
-		
-	documents = []
-	for anime in raw_docs["shows"]:
-		reviews = ""
-		for review in anime['reviews']:
-			reviews += review['content']
-		documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url']) )
+    with open(file) as f:
+            raw_docs = json.loads(f.readlines()[0])
 
-	np.random.shuffle(documents)
-	return documents
-	
+    documents = []
+    for anime in raw_docs["shows"]:
+        reviews = ""
+        for review in anime['reviews']:
+            reviews += review['content']
+        documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url']) )
+
+    np.random.shuffle(documents)
+    return documents
+
 documents = createModel('.'+os.path.sep+'anime_data1.json')
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
 words_compressed, _, docs_compressed = svds(my_matrix, k=100) 
 docs_compressed = docs_compressed.transpose()
-	
+
 word_to_index = vectorizer.vocabulary_
 index_to_word = {i:t for t,i in word_to_index.items()}
-	
+
 words_compressed = normalize(words_compressed, axis = 1)
-	
+
 def closest_words(word_in, k = 10):
-	if word_in not in word_to_index: return [("Not in vocab.", 0)]
-	sims = words_compressed.dot(words_compressed[word_to_index[word_in],:])
-	asort = np.argsort(-sims)[:k+1]
-	return [(index_to_word[i],sims[i]/sims[asort[0]]) for i in asort[1:]]
+    if word_in not in word_to_index: return [("Not in vocab.", 0)]
+    sims = words_compressed.dot(words_compressed[word_to_index[word_in],:])
+    asort = np.argsort(-sims)[:k+1]
+    return [(index_to_word[i],sims[i]/sims[asort[0]]) for i in asort[1:]]
 
 docs_compressed = normalize(docs_compressed, axis = 1)
 def closest_project_to_word(word_in, k = 5):
-	if word_in not in word_to_index: return [("Not in vocab.", 0)]
-	sims = docs_compressed.dot(words_compressed[word_to_index[word_in],:])
-	asort = np.argsort(-sims)[:k+1]
-	return [(documents[i][0], sims[i]/sims[asort[0]]) for i in asort[1:]]
+    if word_in not in word_to_index: return [("Not in vocab.", 0)]
+    sims = docs_compressed.dot(words_compressed[word_to_index[word_in],:])
+    asort = np.argsort(-sims)[:k+1]
+    return [(documents[i][0], sims[i]/sims[asort[0]]) for i in asort[1:]]
 
 def getGames():
-	url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
-	r = requests.get(url)
-	data = r.json()
-	appList = data["applist"]["apps"]
+    url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+    r = requests.get(url)
+    data = r.json()
+    appList = data["applist"]["apps"]
 
-	tupleList = np.array([(0, "")] * len(appList), dtype='object')
-	for i, app in enumerate(appList):
-		tupleList[i] = tuple([int(app['appid']), str(app['name'])])
+    tupleList = np.array([(0, "")] * len(appList), dtype='object')
+    for i, app in enumerate(appList):
+        tupleList[i] = tuple([int(app['appid']), str(app['name'])])
 
-	return tupleList
+    return tupleList
 
 def getSimilarNames(gamesList, query : str):
     similarNames = []
@@ -136,26 +136,31 @@ gameList = getGames()
 
 @irsystem.route('/', methods=['GET'])
 def search():
-	query = request.args.get('search')
-	if not query:
-		data = []
-		output_message = ''
-	else:
-		closestAnime, gameName = getAnimeList(query, gameList)
-		output_message = "Your search: " + gameName
+    query = request.args.get('search')
+    if not query:
+        data = []
+        output_message = ''
+    else:
+        try:
+            closestAnime, gameName = getAnimeList(query, gameList)
+            output_message = gameName
 
-		if closestAnime == "XD?":
-			data = []
-		else:
-			info_anime = []
-			for anime in closestAnime:
-				info_anime.append(getAnimeInfo(anime))
+            if closestAnime == "XD?":
+                data = []
+                output_message = "Could not find game on Steam"
+            else:
+                info_anime = []
+                for anime in closestAnime:
+                    info_anime.append(getAnimeInfo(anime))
 
-			data = []
-			for anime in info_anime:
-				data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3]))
-			
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+                data = []
+                for anime in info_anime:
+                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3]))
+        except:
+            data = []
+            output_message = "Something went wrong, try another query"
+
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
 
 
 
