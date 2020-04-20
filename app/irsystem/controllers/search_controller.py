@@ -37,17 +37,17 @@ index_to_word = {i:t for t,i in word_to_index.items()}
 words_compressed = normalize(words_compressed, axis = 1)
 	
 def closest_words(word_in, k = 10):
-	if word_in not in word_to_index: return "Not in vocab."
+	if word_in not in word_to_index: return [("Not in vocab.", 0)]
 	sims = words_compressed.dot(words_compressed[word_to_index[word_in],:])
 	asort = np.argsort(-sims)[:k+1]
 	return [(index_to_word[i],sims[i]/sims[asort[0]]) for i in asort[1:]]
 
 docs_compressed = normalize(docs_compressed, axis = 1)
 def closest_project_to_word(word_in, k = 5):
-    if word_in not in word_to_index: return "Not in vocab."
-    sims = docs_compressed.dot(words_compressed[word_to_index[word_in],:])
-    asort = np.argsort(-sims)[:k+1]
-    return [(documents[i][0], sims[i]/sims[asort[0]]) for i in asort[1:]]
+	if word_in not in word_to_index: return [("Not in vocab.", 0)]
+	sims = docs_compressed.dot(words_compressed[word_to_index[word_in],:])
+	asort = np.argsort(-sims)[:k+1]
+	return [(documents[i][0], sims[i]/sims[asort[0]]) for i in asort[1:]]
 
 @irsystem.route('/', methods=['GET'])
 def search():
