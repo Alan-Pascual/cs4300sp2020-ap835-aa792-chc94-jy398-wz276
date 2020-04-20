@@ -21,7 +21,7 @@ def createModel(file):
 		reviews = ""
 		for review in anime['reviews']:
 			reviews += review['content']
-		documents.append( (anime['title'], anime['description'], reviews) )
+		documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url']) )
 
 	np.random.shuffle(documents)
 	return documents
