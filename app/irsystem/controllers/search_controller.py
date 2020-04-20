@@ -95,10 +95,10 @@ def getAnimeList(game, gameList, id=False):
         gameID = game
     else:
         gameID = getSimilarNames(gameList, game)
-	if len(gameID) == 0:
-		return "XD?"
-	else:
-		gameID = gameID[0][0]
+    if len(gameID) == 0:
+        return "XD?"
+    else:
+        gameID = gameID[0][0]
     desc = getGamesDesciription(gameID)
     
     animeList = []
