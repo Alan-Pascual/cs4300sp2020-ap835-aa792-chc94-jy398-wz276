@@ -96,8 +96,9 @@ def getAnimeList(game, gameList, id=False):
     else:
         gameID = getSimilarNames(gameList, game)
     if len(gameID) == 0:
-        return "XD?"
+        return "XD?", "No Game Found"
     else:
+        gameName = gameID[0][1]
         gameID = gameID[0][0]
     desc = getGamesDesciription(gameID)
     
@@ -121,7 +122,7 @@ def getAnimeList(game, gameList, id=False):
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_list = [x[0] for x in final_list]
             
-    return final_list[:5]
+    return final_list[:5], gameName
 
 def getAnimeInfo(AnimeName):
     record = []
@@ -140,9 +141,9 @@ def search():
 		data = []
 		output_message = ''
 	else:
-		output_message = "Your search: " + query
-		
-		closestAnime = getAnimeList(query, gameList)
+		closestAnime, gameName = getAnimeList(query, gameList)
+		output_message = "Your search: " + gameName
+
 		if closestAnime == "XD?":
 			data = []
 		else:
@@ -150,12 +151,11 @@ def search():
 			for anime in closestAnime:
 				info_anime.append(getAnimeInfo(anime))
 
-			items = []
+			data = []
 			for anime in info_anime:
-				an_item = dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3])
-				items.append(an_item)
+				data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3]))
 			
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=items)
+	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
 
 
 

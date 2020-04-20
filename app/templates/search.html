@@ -10,20 +10,20 @@
         </div>
         <form class="form-inline global-search">
             <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-                C
-                <span style="color: #EA4335; ">U</span>
-                <span style="color: #FBBC05; ">L</span>
-                T
-                <span style="color: #34A853; ">U</span>
-                <span style="color: #EA4335; ">R</span>
-                <span style="color: #FBBC05; ">E</span>
-                <span style="color: #EA4335; ">_</span>
-                G
-                <span style="color: #34A853; ">A</span>
-                <span style="color: #EA4335; ">M</span>
-                <span style="color: #FBBC05; ">E</span>
-                R
-                <span style="color: #34A853; ">S</span>
+                                                 G
+                <span style="color: #EA4335; ">  A  </span>
+                <span style="color: #FBBC05; ">  M  </span>
+                                                 E
+                <span style="color: #34A853; ">  S  </span>
+                <span style="color: #EA4335; ">  2  </span>
+                <span style="color: #FBBC05; ">  A  </span>
+                <span style="color: #EA4335; ">  N  </span>
+                                                 I
+                <span style="color: #34A853; ">  M  </span>
+                <span style="color: #EA4335; ">  E  </span>
+                <!--<span style="color: #FBBC05; ">  E  </span>
+                                                 R
+                <span style="color: #34A853; ">  S  </span>-->
             </h1>
             
             <br><br>
@@ -35,23 +35,29 @@
         </form>
         <form class="form-inline global-search">
         {% if data %}
-            <h1>{{output_message}}</h1>
-                <table>
-                {% for item in data %}
-                <TR>
-                <TD class="c1"><IMG src=item.picture></TD>
-                <TD class="c2"><p>{{item.name}}</p>
-                    <br>
-                    <p>{{item.description}}</p>
-                </TD>
-                <TD class="c3">
-                    <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                    </iframe>
-                </TD>
-                </TR>
-                {% endfor %}
-                </table>
-                <br>           
+            <h2>{{output_message}}</h2>
+            <br>
+            <br>
+            <br>
+            {% for item in data %}
+                <div class="row">
+                    <div class="col-sm-4">
+                        <IMG src={{item.picture}}>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3>{{item.name}}</h3>
+                        <br>
+                        <br>
+                        <p>{{item.description}}</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            <br>
+            <br>
+            {% endfor %}
         {% endif %}
         </form>
     </body>
