@@ -144,7 +144,10 @@ def search():
 		
 		closestAnime = getAnimeList(query, gameList)
 		if closestAnime == "XD?":
-			data = ["LUL GET PAWNED NOOB"]
+			data = ["Something went wrong!"]
+			descriptions = ["Something went wrong!"]
+			pictures = ["Something went wrong!"]
+			videos = ["Something went wrong!"]
 		else:
 			info_anime = []
 			for anime in closestAnime:
