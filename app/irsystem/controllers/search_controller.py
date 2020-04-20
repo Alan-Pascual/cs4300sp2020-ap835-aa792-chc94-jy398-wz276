@@ -138,29 +138,24 @@ def search():
 	query = request.args.get('search')
 	if not query:
 		data = []
-		descriptions = []
-		pictures = []
-		videos = []
 		output_message = ''
 	else:
 		output_message = "Your search: " + query
 		
 		closestAnime = getAnimeList(query, gameList)
 		if closestAnime == "XD?":
-			data = ["Something went wrong!"]
-			descriptions = ["Something went wrong!"]
-			pictures = ["Something went wrong!"]
-			videos = ["Something went wrong!"]
+			data = []
 		else:
 			info_anime = []
 			for anime in closestAnime:
 				info_anime.append(getAnimeInfo(anime))
 
-			data = [x[0] for x in info_anime]
-			descriptions = [x[1] for x in info_anime]
-			pictures = [x[2] for x in info_anime]
-			videos = [x[3] for x in info_anime]
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, descriptions=descriptions, pictures=pictures, videos=videos)
+			items = []
+			for anime in info_anime:
+				an_item = dict(name=anime[0],description=anime[1],picture=anime[2],video=[3])
+				items.append(an_item)
+			
+	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=items)
 
 
 
