@@ -32,7 +32,7 @@ def createModel(file):
 
 documents = createModel('.'+os.path.sep+'anime_data1.json')
 
-print("JSON Loaded")
+print("JSON Loaded", len(documents))
 
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
