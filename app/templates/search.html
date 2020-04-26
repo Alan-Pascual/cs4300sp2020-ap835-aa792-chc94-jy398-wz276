@@ -3,67 +3,80 @@
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="/static/main.css">
     </head>
-    <body>
-        <div class="topcorner">
-            <p>Project Name: {{ name }}</p>
-            <p>Student Name: ({{ netid }})</p>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      	<div class="container-fluid">
+        <div class="navbar-header">
+          	<a class="navbar-brand" href="#">Games2Anime</a>
         </div>
-        <form class="form-inline global-search">
-            <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-                                                 G
-                <span style="color: #EA4335; ">  A  </span>
-                <span style="color: #FBBC05; ">  M  </span>
-                                                 E
-                <span style="color: #34A853; ">  S  </span>
-                <span style="color: #EA4335; ">  2  </span>
-                <span style="color: #FBBC05; ">  A  </span>
-                <span style="color: #EA4335; ">  N  </span>
-                                                 I
-                <span style="color: #34A853; ">  M  </span>
-                <span style="color: #EA4335; ">  E  </span>
-                <!--<span style="color: #FBBC05; ">  E  </span>
-                                                 R
-                <span style="color: #34A853; ">  S  </span>-->
-            </h1>
-            
-            <br><br>
-            
-            <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
-            </div>
-            <button type="submit" class="btn btn-info"> Go! </button>
-        </form>
-        <form class="form-inline global-search">
-        <h2>{{output_message}}</h2>
-        {% if data %}
-            <br>
-            <br>
-            <br>
-            {% for item in data %}
-                <div class="row">
-                    <div class="col-sm-4">
-                        <IMG src={{item.picture}}>
-                    </div>
-                    <div class="col-sm-4">
-                        <h3>{{item.name}}</h3>
-                        <br>
-                        <br>
-                        <p>{{item.description}}</p>
-                    </div>
-                    <div class="col-sm-4">
-                        {% if item.video %}
-                            <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                            </iframe>
-                        {% else %}
-                            <h5>No video available</h5>
-                        {% endif %}
-                    </div>
-                </div>
-            <br>
-            <br>
-            {% endfor %}
-        {% endif %}
-        </form>
-    </body>
+        <ul class="nav navbar-nav">
+          	<li class="active"><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+      	</div>
+    </nav>
+    <body>
+    	<form autocomplete="off" class="form-inline global-search">
+    	    <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+    	                                         G
+    	        <span style="color: #EA4335; ">  A  </span>
+    	        <span style="color: #FBBC05; ">  M  </span>
+    	                                         E
+    	        <span style="color: #34A853; ">  S  </span>
+    	        <span style="color: #EA4335; ">  2  </span>
+    	        <span style="color: #FBBC05; ">  A  </span>
+    	        <span style="color: #EA4335; ">  N  </span>
+    	                                         I
+    	        <span style="color: #34A853; ">  M  </span>
+    	        <span style="color: #EA4335; ">  E  </span>
+    	        <!--<span style="color: #FBBC05; ">  E  </span>
+    	                                         R
+    	        <span style="color: #34A853; ">  S  </span>-->
+    	    </h1>
+    	    <br>
+    	    <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
+    	    
+    	    <br><br>
+    	    
+    	    <div class="form-group">
+    	        <input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
+    	    </div>
+    	    <button type="submit" class="btn btn-info"> Go! </button>
+    	</form>
 
+    	<form class="form-inline global-search">
+    	<h2>{{output_message}}</h2>
+    	{% if data %}
+    	    <br>
+    	    <br>
+    	    <br>
+    	    {% for item in data %}
+    	        <div class="row">
+    	            <div class="col-sm-4">
+    	                <IMG src={{item.picture}}>
+    	            </div>
+    	            <div class="col-sm-4">
+    	                <h3>{{item.name}}</h3>
+    	                <br>
+    	                <br>
+    	                <p>{{item.description}}</p>
+    	            </div>
+    	            <div class="col-sm-4">
+    	                {% if item.video %}
+    	                    <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+    	                    </iframe>
+    	                {% else %}
+    	                    <h5>No video available</h5>
+    	                {% endif %}
+    	            </div>
+    	        </div>
+    	    <br>
+    	    <br>
+    	    {% endfor %}
+    	{% endif %}
+    	</form>
+    </body>
+    <footer>
+    	<p align="center", style="text-align:center">Project Name: {{ name }}</p>
+       	<p align="center", style="text-align:center">Student Name: ({{ netid }})</p>
+    </footer>
 </html>
