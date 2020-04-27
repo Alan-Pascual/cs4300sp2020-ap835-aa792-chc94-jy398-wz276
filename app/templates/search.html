@@ -14,9 +14,14 @@
 		</ul>
 	</div>
 </nav>
-<body>
+<body style="background-image: url('/static/img/bg2.png');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+	margin-top: -7%;">
+	<div style="height: 610px;overflow: scroll;">
 	<form autocomplete="off" class="form-inline global-search">
-		<h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+		<!-- <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
 			G
 			<span style="color: #EA4335; ">  A  </span>
 			<span style="color: #FBBC05; ">  M  </span>
@@ -27,12 +32,14 @@
 			<span style="color: #EA4335; ">  N  </span>
 			I
 			<span style="color: #34A853; ">  M  </span>
-			<span style="color: #EA4335; ">  E  </span>
+			<span style="color: #EA4335; ">  E  </span> -->
     	        <!--<span style="color: #FBBC05; ">  E  </span>
     	                                         R
     	                                         <span style="color: #34A853; ">  S  </span>-->
-         </h1>
-         <br>
+		 <!-- </h1> -->
+		 <IMG src="/static/img/logo.png">
+		 <br>
+		 <br>
          <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
 
          <br><br>
@@ -193,6 +200,7 @@
 		{% endfor %}
 		{% endif %}
 	</form>
+	</div>
 	<script>
 		//Accordion script
 		function toggleAccordion(elements) {
@@ -213,7 +221,7 @@
 	</script>
 </body>
 <footer>
-	<p align="center", style="text-align:center">Project Name: {{ name }}</p>
-	<p align="center", style="text-align:center">Student Name: ({{ netid }})</p>
+	<p align="center", style="color: white;text-align:center">Project Name: {{ name }}</p>
+	<p align="center", style="color: white;text-align:center">Student Name: ({{ netid }})</p>
 </footer>
 </html>
