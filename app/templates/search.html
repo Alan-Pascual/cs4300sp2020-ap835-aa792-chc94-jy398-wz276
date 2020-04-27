@@ -166,7 +166,7 @@
 			<div class="col-sm-4">
 				<IMG src={{item.picture}}>
 			</div>
-			<div class="col-sm-4">
+			<div class="col-sm-6">
 				<h3>{{item.name}}</h3>
 				<br>
 				<br>
@@ -174,14 +174,15 @@
 				<div class="panel">
 					<p>{{item.description}}</p>
 				</div>
-			</div>
-			<div class="col-sm-4">
-				{% if item.video %}
-				<iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-				</iframe>
-				{% else %}
-				<h5>No video available</h5>
-				{% endif %}
+				<button class="accordion" type="button" onclick="getData()">Trailer</button>
+				<div class="panel">
+					{% if item.video %}
+					<iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+					</iframe>
+					{% else %}
+					<h5>No video available</h5>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 		<br>
