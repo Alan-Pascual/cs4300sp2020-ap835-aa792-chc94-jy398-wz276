@@ -163,7 +163,7 @@
 	</script>
 
 	<form class="form-inline global-search">
-		<h4>Results for: {{output_message}}</h4>
+		<h4>{{output_message}}</h4>
 		{% if data %}
 		<br>
 		<br>
@@ -178,8 +178,29 @@
 					<IMG src={{item.picture}}>
 				</div>
 				<div class="col-sm-6">
-					<br>
 					<div style="text-align: left;">
+						<a href="{{item.website}}">
+						<h2 style="color: 
+						{% if item.rating > 7%}
+							green
+						{% elif item.rating > 4 %}
+							yellow
+						{% else %}
+							red
+						{% endif %}">{{item.rating}}</h2> / 10
+						</a>
+						<br>
+						<p style="color:gray">{{item.eps}} Episodes</p>
+						<h5 style="color:cornflowerblue;">Tags: 
+						{% for g in item.genre %} {{g}}
+						{% if not loop.last %}
+							,
+						{% endif %}
+						{% endfor %}
+						</h5>
+						<!-- {{item.studio}} -->
+						<br>
+						<br>
 						<p>{{item.description}}</p>
 					</div>
 				</div>
