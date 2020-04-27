@@ -37,7 +37,7 @@
 
          <br><br>
 
-         <div class="autocomplete" style="width:300px;">
+         <div class="autocomplete" style="width:500px;">
          	<input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
          </div>
          <button type="submit" class="btn btn-info"> Go! </button>
@@ -150,7 +150,7 @@
 	    }
 
 	    var games = {{ game_list|tojson }};
-	    autocomplete(document.getElementById("input"), games);
+		autocomplete(document.getElementById("input"), games);
 	</script>
 
 	<form class="form-inline global-search">
@@ -168,7 +168,10 @@
 				<h3>{{item.name}}</h3>
 				<br>
 				<br>
-				<p>{{item.description}}</p>
+				<button>Description</button>
+				<div class="panel">
+					<p>{{item.description}}</p>
+				</div>
 			</div>
 			<div class="col-sm-4">
 				{% if item.video %}
@@ -184,6 +187,24 @@
 		{% endfor %}
 		{% endif %}
 	</form>
+	<script>
+		//Accordion script
+		function toggleAccordion(elements) {
+			var i;
+			for (i = 0; i < elements.length; i++) {
+				elements[i].addEventListener("click", function() {
+					this.classList.toggle("active");
+					var panel = this.nextElementSibling;
+					if (panel.style.display === "block") {
+					panel.style.display = "none";
+					} else {
+					panel.style.display = "block";
+					}
+				});
+			}
+		}
+		toggleAccordion(document.getElementsByClassName("accordion"));
+	</script>
 </body>
 <footer>
 	<p align="center", style="text-align:center">Project Name: {{ name }}</p>
