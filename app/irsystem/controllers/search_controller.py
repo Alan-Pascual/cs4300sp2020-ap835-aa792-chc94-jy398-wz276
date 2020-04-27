@@ -17,6 +17,8 @@ net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffr
 TAG_RE = re.compile(r'<[^>]+>')
 genre_dict = {1: 'Action', 2: 'Adventure', 3: 'Cars',4: 'Comedy',5: 'Dementia',6: 'Demons',7: 'Mystery',8: 'Drama', 9: 'Ecchi',10:'Fantasy',11:'Game',12:'Hentai',13:'Historical',14:'Horror',15:'Kids',16:'Magic',17:'Martial Arts',18:'Mecha',19:'Music',20:'Parody',21:'Samurai',22:'Romance',23:'School',24:'Sci-Fi',25:'Shoujo',26:'Shoujo Ai',27:'Shounen',28:'Shounen Ai',29:'Space',30:'Sports',31:'Super Power',32:'Vampire',33:'Yaoi',34:'Yuri',35:'Harem',36:'Slice of Life',37:'Supernatural',38:'Military', 39:'Police',40:'Psychological',41:'Thriller',42:'Seinen',43:'Josei'}
 
+k_value = 200
+
 def createModel(file):
     with open(file) as f:
             raw_docs = json.loads(f.readlines()[0])
@@ -38,7 +40,7 @@ print("JSON Loaded", len(documents))
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
-words_compressed, _, docs_compressed = svds(my_matrix, k=100) 
+words_compressed, _, docs_compressed = svds(my_matrix, k=200) 
 docs_compressed = docs_compressed.transpose()
 
 word_to_index = vectorizer.vocabulary_
@@ -164,6 +166,9 @@ def getAnimeInfo(AnimeName):
             break
     return record
     
+#Get list of game names for autocomplete
+autocompleteGamesList = sorted(list(zip(*gameList))[1])
+    
 print("All methods and data has been loaded sucessfully:")
 print("JSON Anime:", len(documents))
 print("Steam Games:", len(gameList))
@@ -199,10 +204,7 @@ def search():
             data = []
             output_message = "Something went wrong, try another query"
 
-    #Get list of game names for autocomplete
-    gamesList = list(zip(*gameList))[1]
-
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=gamesList)
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=autocompleteGamesList)
 
 
 
