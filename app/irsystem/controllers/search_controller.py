@@ -17,8 +17,6 @@ net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffr
 TAG_RE = re.compile(r'<[^>]+>')
 genre_dict = {1: 'Action', 2: 'Adventure', 3: 'Cars',4: 'Comedy',5: 'Dementia',6: 'Demons',7: 'Mystery',8: 'Drama', 9: 'Ecchi',10:'Fantasy',11:'Game',12:'Hentai',13:'Historical',14:'Horror',15:'Kids',16:'Magic',17:'Martial Arts',18:'Mecha',19:'Music',20:'Parody',21:'Samurai',22:'Romance',23:'School',24:'Sci-Fi',25:'Shoujo',26:'Shoujo Ai',27:'Shounen',28:'Shounen Ai',29:'Space',30:'Sports',31:'Super Power',32:'Vampire',33:'Yaoi',34:'Yuri',35:'Harem',36:'Slice of Life',37:'Supernatural',38:'Military', 39:'Police',40:'Psychological',41:'Thriller',42:'Seinen',43:'Josei'}
 
-k_value = 200
-
 def createModel(file):
     with open(file) as f:
             raw_docs = json.loads(f.readlines()[0])
@@ -37,7 +35,7 @@ documents = createModel('.'+os.path.sep+'anime_data1.json')
 
 print("JSON Loaded", len(documents))
 
-vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .9, min_df = 2)
+vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .85, min_df = 5)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
 words_compressed, _, docs_compressed = svds(my_matrix, k=200) 
@@ -111,10 +109,18 @@ def getGamesDescription(id):
             return "Not Valid"
     else:
         return "Not Valid"
+        
+def getGameTags(id):
+    url = "https://steamspy.com/api.php?request=appdetails&appid=" + str(id)
+    r = requests.get(url)
+    print(r)
+    data = r.json()
+    return data["tags"].keys()[:3]
 
 def getAnimeList(game, gameList, id=False):
     desc = ""
     gameName = ""
+    tags = ""
     if id:
         desc = getGamesDescription(game)
         gameName = "You entered the ID so you know this"
@@ -131,6 +137,7 @@ def getAnimeList(game, gameList, id=False):
                 else:
                     desc = output
                     gameName = ID[1]
+                    #tags = getGameTags(ID[0])
                     break
     
     if desc == "":
@@ -143,7 +150,7 @@ def getAnimeList(game, gameList, id=False):
     
     for word in desc:
         word_list = closest_project_to_word(word.lower(), 5)
-        if word_list != "Not in vocab.":
+        if word_list != "Not in vocab.": #word_list[0][0]
             for anime in word_list: #for each anime in list of anime
                 found = False
                 for i, animeClosest in zip(range(len(animeList)), animeList): 
@@ -152,7 +159,23 @@ def getAnimeList(game, gameList, id=False):
                         found = True
                 if not found:
                     animeList.append([anime[0], anime[1]])
-                    
+    '''
+    weight = 2
+    for tag in tags:
+        tag_words = closest_words(tag, 5)
+        if tag_words[0][0] != "Not in Vocab":
+            for word in tag_words:
+                word_list = closest_project_to_word(word.lower(), 5)
+                if word_list[0][0] != "Not in vocab.":
+                    for anime in word_list: #for each anime in list of anime
+                        found = False
+                        for i, animeClosest in zip(range(len(animeList)), animeList): 
+                            if animeClosest[0] == anime[0]: #found anime
+                                animeList[i][1] += weight*anime[1]
+                                found = True
+                        if not found:
+                            animeList.append([anime[0], weight*anime[1]])
+    '''              
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_list = [x[0] for x in final_list]
             
@@ -167,7 +190,7 @@ def getAnimeInfo(AnimeName):
     return record
     
 #Get list of game names for autocomplete
-autocompleteGamesList = sorted(list(zip(*gameList))[1])
+autocompleteGamesList = [x for x in sorted(list(zip(*gameList))[1]) if "soundtrack" not in x.lower() and "dlc" not in x.lower()]
     
 print("All methods and data has been loaded sucessfully:")
 print("JSON Anime:", len(documents))
