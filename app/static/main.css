@@ -88,7 +88,7 @@ input[type=submit] {
   color: #444;
   cursor: pointer;
   padding: 18px;
-  width: 100%;
+  width: 400pt;
   border: none;
   text-align: left;
   outline: none;
@@ -96,11 +96,14 @@ input[type=submit] {
   transition: 0.4s;
 }
 .active, .accordion:hover {
-  background-color: #ccc; 
+  background-color: #ccc;
+  width: 400pt;
 }
 .panel {
-  padding: 0 18px;
-  display: none;
+  margin: 0 auto;
+  display: block;
+  width: 400pt;
+  text-align: middle;
   background-color: white;
   overflow: hidden;
 }

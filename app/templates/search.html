@@ -162,27 +162,30 @@
 		<br>
 		<br>
 		{% for item in data %}
-		<div class="row">
-			<div class="col-sm-4">
-				<IMG src={{item.picture}}>
+		<button class="accordion" type="button" onclick="getData()">{{item.name}}</button>
+		<div class="panel">
+			<div class="row">
+				<div class="col-sm-6">
+					<IMG src={{item.picture}}>
+				</div>
+				<div class="col-sm-6">
+					<h3>{{item.name}}</h3>
+					<br>
+					<br>
+					<div style="text-align: left;">
+						<p>{{item.description}}</p>
+					</div>
+				</div>
 			</div>
-			<div class="col-sm-6">
-				<h3>{{item.name}}</h3>
-				<br>
-				<br>
-				<button class="accordion" type="button" onclick="getData()">Description</button>
-				<div class="panel">
-					<p>{{item.description}}</p>
-				</div>
-				<button class="accordion" type="button" onclick="getData()">Trailer</button>
-				<div class="panel">
-					{% if item.video %}
-					<iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-					</iframe>
-					{% else %}
-					<h5>No video available</h5>
-					{% endif %}
-				</div>
+			<br>
+			<br>
+			<div class="row">
+				{% if item.video %}
+				<iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+				</iframe>
+				{% else %}
+				<h5>No video available</h5>
+				{% endif %}
 			</div>
 		</div>
 		<br>
@@ -199,9 +202,9 @@
 					this.classList.toggle("active");
 					var panel = this.nextElementSibling;
 					if (panel.style.display === "block") {
-					panel.style.display = "none";
+						panel.style.display = "none";
 					} else {
-					panel.style.display = "block";
+						panel.style.display = "block";
 					}
 				});
 			}
