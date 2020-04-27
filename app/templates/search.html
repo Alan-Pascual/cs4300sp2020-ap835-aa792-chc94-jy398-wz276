@@ -53,9 +53,6 @@
 	    	  	var a, b, i, val = this.value;
 	    	  	/*close any already open lists of autocompleted values*/
 	    	  	closeAllLists();
-	    	  	if(document.getElementById("input").value.length<3){
-	    	  		return;
-	    	  	}
 	    	  	if (!val) { return false;}
 	    	  	currentFocus = -1;
 	    	  	/*create a DIV element that will contain the items (values):*/
