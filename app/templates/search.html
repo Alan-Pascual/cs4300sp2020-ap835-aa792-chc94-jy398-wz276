@@ -163,21 +163,21 @@
 	</script>
 
 	<form class="form-inline global-search">
-		<h2>{{output_message}}</h2>
+		<h4>Results for: {{output_message}}</h4>
 		{% if data %}
 		<br>
 		<br>
 		<br>
 		{% for item in data %}
-		<button class="accordion" type="button" onclick="getData()">{{item.name}}</button>
+		<button class="accordion" type="button" onclick="getData()" style="text-align:center;">
+			<h3>{{item.name}}</h3>
+		</button>
 		<div class="panel">
 			<div class="row">
 				<div class="col-sm-6">
 					<IMG src={{item.picture}}>
 				</div>
 				<div class="col-sm-6">
-					<h3>{{item.name}}</h3>
-					<br>
 					<br>
 					<div style="text-align: left;">
 						<p>{{item.description}}</p>
