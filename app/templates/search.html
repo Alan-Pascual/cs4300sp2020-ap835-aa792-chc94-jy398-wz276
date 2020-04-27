@@ -1,82 +1,195 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="/static/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/main.css">
-    </head>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      	<div class="container-fluid">
-        <div class="navbar-header">
-          	<a class="navbar-brand" href="#">Games2Anime</a>
-        </div>
-        <ul class="nav navbar-nav">
-          	<li class="active"><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-        </ul>
-      	</div>
-    </nav>
-    <body>
-    	<form autocomplete="off" class="form-inline global-search">
-    	    <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-    	                                         G
-    	        <span style="color: #EA4335; ">  A  </span>
-    	        <span style="color: #FBBC05; ">  M  </span>
-    	                                         E
-    	        <span style="color: #34A853; ">  S  </span>
-    	        <span style="color: #EA4335; ">  2  </span>
-    	        <span style="color: #FBBC05; ">  A  </span>
-    	        <span style="color: #EA4335; ">  N  </span>
-    	                                         I
-    	        <span style="color: #34A853; ">  M  </span>
-    	        <span style="color: #EA4335; ">  E  </span>
+<head>
+	<link rel="stylesheet" href="/static/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/main.css">
+</head>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">Games2Anime</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="#home">Home</a></li>
+			<li><a href="#about">About</a></li>
+		</ul>
+	</div>
+</nav>
+<body>
+	<form autocomplete="off" class="form-inline global-search">
+		<h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+			G
+			<span style="color: #EA4335; ">  A  </span>
+			<span style="color: #FBBC05; ">  M  </span>
+			E
+			<span style="color: #34A853; ">  S  </span>
+			<span style="color: #EA4335; ">  2  </span>
+			<span style="color: #FBBC05; ">  A  </span>
+			<span style="color: #EA4335; ">  N  </span>
+			I
+			<span style="color: #34A853; ">  M  </span>
+			<span style="color: #EA4335; ">  E  </span>
     	        <!--<span style="color: #FBBC05; ">  E  </span>
     	                                         R
-    	        <span style="color: #34A853; ">  S  </span>-->
-    	    </h1>
-    	    <br>
-    	    <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
-    	    
-    	    <br><br>
-    	    
-    	    <div class="form-group">
-    	        <input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
-    	    </div>
-    	    <button type="submit" class="btn btn-info"> Go! </button>
-    	</form>
+    	                                         <span style="color: #34A853; ">  S  </span>-->
+         </h1>
+         <br>
+         <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
 
-    	<form class="form-inline global-search">
-    	<h2>{{output_message}}</h2>
-    	{% if data %}
-    	    <br>
-    	    <br>
-    	    <br>
-    	    {% for item in data %}
-    	        <div class="row">
-    	            <div class="col-sm-4">
-    	                <IMG src={{item.picture}}>
-    	            </div>
-    	            <div class="col-sm-4">
-    	                <h3>{{item.name}}</h3>
-    	                <br>
-    	                <br>
-    	                <p>{{item.description}}</p>
-    	            </div>
-    	            <div class="col-sm-4">
-    	                {% if item.video %}
-    	                    <iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-    	                    </iframe>
-    	                {% else %}
-    	                    <h5>No video available</h5>
-    	                {% endif %}
-    	            </div>
-    	        </div>
-    	    <br>
-    	    <br>
-    	    {% endfor %}
-    	{% endif %}
-    	</form>
-    </body>
-    <footer>
-    	<p align="center", style="text-align:center">Project Name: {{ name }}</p>
-       	<p align="center", style="text-align:center">Student Name: ({{ netid }})</p>
-    </footer>
+         <br><br>
+
+         <div class="autocomplete" style="width:300px;">
+         	<input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
+         </div>
+         <button type="submit" class="btn btn-info"> Go! </button>
+     </form>
+     <!-- Scripts -->
+     <script type="text/javascript">
+     	function autocomplete(inp, arr) {
+	    	  /*the autocomplete function takes two arguments,
+	    	  the text field element and an array of possible autocompleted values:*/
+	    	  var currentFocus;
+	    	  /*execute a function when someone writes in the text field:*/
+	    	  inp.addEventListener("input", function(e) {
+	    	  	var a, b, i, val = this.value;
+	    	  	/*close any already open lists of autocompleted values*/
+	    	  	closeAllLists();
+	    	  	if(document.getElementById("input").value.length<3){
+	    	  		return;
+	    	  	}
+	    	  	if (!val) { return false;}
+	    	  	currentFocus = -1;
+	    	  	/*create a DIV element that will contain the items (values):*/
+	    	  	a = document.createElement("DIV");
+	    	  	a.setAttribute("id", this.id + "autocomplete-list");
+	    	  	a.setAttribute("class", "autocomplete-items");
+	    	  	/*append the DIV element as a child of the autocomplete container:*/
+	    	  	this.parentNode.appendChild(a);
+	    	  	count = 0;
+	    	  	/*for each item in the array...*/
+	    	  	for (i = 0; i < arr.length; i++) {
+	    	  		/*check if the item starts with the same letters as the text field value:*/
+	    	  		if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+	    	  			/*create a DIV element for each matching element:*/
+	    	  			b = document.createElement("DIV");
+	    	  			/*make the matching letters bold:*/
+	    	  			b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+	    	  			b.innerHTML += arr[i].substr(val.length);
+	    	  			/*insert a input field that will hold the current array item's value:*/
+	    	  			b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+	    	  			/*execute a function when someone clicks on the item value (DIV element):*/
+	    	  			b.addEventListener("click", function(e) {
+	    	  				/*insert the value for the autocomplete text field:*/
+	    	  				inp.value = this.getElementsByTagName("input")[0].value;
+	    	              /*close the list of autocompleted values,
+	    	              (or any other open lists of autocompleted values:*/
+	    	              closeAllLists();
+	    	          	});
+	    	  			a.appendChild(b);
+	    	  			if(count > 6){
+	    	  				return;
+	    	  			}
+	    	  			count++;
+	    	  		}
+	    	  	}
+	    	  });
+
+	    	  /*execute a function presses a key on the keyboard:*/
+	    	  inp.addEventListener("keydown", function(e) {
+	    	  	var x = document.getElementById(this.id + "autocomplete-list");
+	    	  	if (x) x = x.getElementsByTagName("div");
+	    	  	if (e.keyCode == 40) {
+	    	        /*If the arrow DOWN key is pressed,
+	    	        increase the currentFocus variable:*/
+	    	        currentFocus++;
+	    	        /*and and make the current item more visible:*/
+	    	        addActive(x);
+	    	      } else if (e.keyCode == 38) { //up
+	    	        /*If the arrow UP key is pressed,
+	    	        decrease the currentFocus variable:*/
+	    	        currentFocus--;
+	    	        /*and and make the current item more visible:*/
+	    	        addActive(x);
+	    	    } else if (e.keyCode == 13) {
+	    	    	/*If the ENTER key is pressed, prevent the form from being submitted,*/
+	    	    	e.preventDefault();
+	    	    	if (currentFocus > -1) {
+	    	    		/*and simulate a click on the "active" item:*/
+	    	    		if (x) x[currentFocus].click();
+	    	    	}
+	    	    }
+	    	});
+
+	    	  function addActive(x) {
+	    	  	/*a function to classify an item as "active":*/
+	    	  	if (!x) return false;
+	    	  	/*start by removing the "active" class on all items:*/
+	    	  	removeActive(x);
+	    	  	if (currentFocus >= x.length) currentFocus = 0;
+	    	  	if (currentFocus < 0) currentFocus = (x.length - 1);
+	    	  	/*add class "autocomplete-active":*/
+	    	  	x[currentFocus].classList.add("autocomplete-active");
+	    	  }
+	    	  function removeActive(x) {
+	    	  	/*a function to remove the "active" class from all autocomplete items:*/
+	    	  	for (var i = 0; i < x.length; i++) {
+	    	  		x[i].classList.remove("autocomplete-active");
+	    	  	}
+	    	  }
+	    	  function closeAllLists(elmnt) {
+	    	    /*close all autocomplete lists in the document,
+	    	    except the one passed as an argument:*/
+	    	    var x = document.getElementsByClassName("autocomplete-items");
+	    	    for (var i = 0; i < x.length; i++) {
+	    	    	if (elmnt != x[i] && elmnt != inp) {
+	    	    		x[i].parentNode.removeChild(x[i]);
+	    	    	}
+	    	    }
+	    	}
+
+	    	/*execute a function when someone clicks in the document:*/
+	    	document.addEventListener("click", function (e) {
+	    		closeAllLists(e.target);
+	    	});
+	    }
+
+	    var games = {{ game_list|tojson }};
+	    autocomplete(document.getElementById("input"), games);
+	</script>
+
+	<form class="form-inline global-search">
+		<h2>{{output_message}}</h2>
+		{% if data %}
+		<br>
+		<br>
+		<br>
+		{% for item in data %}
+		<div class="row">
+			<div class="col-sm-4">
+				<IMG src={{item.picture}}>
+			</div>
+			<div class="col-sm-4">
+				<h3>{{item.name}}</h3>
+				<br>
+				<br>
+				<p>{{item.description}}</p>
+			</div>
+			<div class="col-sm-4">
+				{% if item.video %}
+				<iframe width="560" height="315" src={{item.video}} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+				</iframe>
+				{% else %}
+				<h5>No video available</h5>
+				{% endif %}
+			</div>
+		</div>
+		<br>
+		<br>
+		{% endfor %}
+		{% endif %}
+	</form>
+</body>
+<footer>
+	<p align="center", style="text-align:center">Project Name: {{ name }}</p>
+	<p align="center", style="text-align:center">Student Name: ({{ netid }})</p>
+</footer>
 </html>
