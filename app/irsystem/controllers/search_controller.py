@@ -15,6 +15,7 @@ import requests
 project_name = "Games2Anime: Anime Recommendations Based on Game Preferences"
 net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffrey Yao (jy398), Wenjia Zhang (wz276)"
 TAG_RE = re.compile(r'<[^>]+>')
+genre_dict = {1: 'Action', 2: 'Adventure', 3: 'Cars',4: 'Comedy',5: 'Dementia',6: 'Demons',7: 'Mystery',8: 'Drama', 9: 'Ecchi',10:'Fantasy',11:'Game',12:'Hentai',13:'Historical',14:'Horror',15:'Kids',16:'Magic',17:'Martial Arts',18:'Mecha',19:'Music',20:'Parody',21:'Samurai',22:'Romance',23:'School',24:'Sci-Fi',25:'Shoujo',26:'Shoujo Ai',27:'Shounen',28:'Shounen Ai',29:'Space',30:'Sports',31:'Super Power',32:'Vampire',33:'Yaoi',34:'Yuri',35:'Harem',36:'Slice of Life',37:'Supernatural',38:'Military', 39:'Police',40:'Psychological',41:'Thriller',42:'Seinen',43:'Josei'}
 
 def createModel(file):
     with open(file) as f:
@@ -25,7 +26,7 @@ def createModel(file):
         reviews = ""
         for review in anime['reviews']:
             reviews += review['content']
-        documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url']) )
+        documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url'], anime['mal_id'], anime['rating'], anime['number_eps'], [genre_dict[x] for x in anime["genres"]], ["STUDIO"])   )
 
     np.random.shuffle(documents)
     return documents
@@ -159,7 +160,7 @@ def getAnimeInfo(AnimeName):
     record = []
     for anime in documents:
         if AnimeName == anime[0]:
-            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0]]
+            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9]]
             break
     return record
     
@@ -185,10 +186,14 @@ def search():
                 info_anime = []
                 for anime in closestAnime:
                     info_anime.append(getAnimeInfo(anime))
+                
+                #Logs
+                print("USER QUERY =", query)
+                print("RETURNED:", [anime[0] for anime in info_anime])
 
                 data = []
                 for anime in info_anime:
-                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3]))
+                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8]))
         except:
             print("Unexpected error:", sys.exc_info())
             data = []
