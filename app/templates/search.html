@@ -72,12 +72,6 @@
 	    	  			val = val.trim()
 	    	  			var regEx = new RegExp(val, "ig");
 	    	  			temp = arr[i].substring(arr[i].search(regEx),arr[i].search(regEx)+val.length);
-	    	  			if (temp.charAt(0) == " "){
-	    	  				temp = "&nbsp" + temp
-	    	  			}
-	    	  			if (temp.charAt(temp.length-1) == " "){
-	    	  				temp = temp + "&nbsp"
-	    	  			}
 	    	  			b.innerHTML = arr[i].replace(regEx,"<strong>" + temp + "</strong>");
 	    	  			/*insert a input field that will hold the current array item's value:*/
 	    	  			b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
