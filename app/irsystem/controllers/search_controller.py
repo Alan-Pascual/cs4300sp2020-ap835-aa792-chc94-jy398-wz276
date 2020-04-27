@@ -201,7 +201,6 @@ def search():
 
     #Get list of game names for autocomplete
     gamesList = list(zip(*gameList))[1]
-    print(gamesList)
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=gamesList)
 
