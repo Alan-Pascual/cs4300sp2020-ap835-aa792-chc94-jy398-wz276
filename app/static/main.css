@@ -102,7 +102,7 @@ input[type=submit] {
 }
 .panel {
   margin: 0 auto;
-  display: block;
+  display: none;
   text-align: middle;
   background-color: white;
   overflow: hidden;
