@@ -195,11 +195,11 @@ def getAnimeList(game, gameList, id=False):
     #    anime[1] = anime[1] / animeCount[i][1] 
     #print(animeList)
     
-    weighting = max[x[1] for x in animeCount]
+    weighting = max([x[1] for x in animeCount])
     
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
-    final_scores = [x[1]/weighting for x in final_list
+    final_scores = [x[1]/weighting for x in final_list]
             
     return final_anime[:5], gameName, final_scores[:5]
 
@@ -228,7 +228,7 @@ def search():
         try:
             closestAnime, gameName, animeSimScores = getAnimeList(query, gameList)
             output_message = gameName
-
+            print(closestAnime, animeSimScores)
             if closestAnime == "No Game Found":
                 data = []
                 output_message = "Could not find game on Steam"
