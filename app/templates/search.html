@@ -173,16 +173,24 @@
 				</div>
 				<div class="col-sm-8">
 					<div style="text-align: left;">
-						<a href="{{item.website}}">
-						<h2 style=" margin-top: 0; color: 
-						{% if item.rating > 7%}
-							green
-						{% elif item.rating > 4 %}
-							yellow
-						{% else %}
-							red
-						{% endif %}">{{item.rating}}</h2> / 10
-						</a>
+						<div class="row">
+							<div class="col-sm-4">
+								<a href="{{item.website}}">
+									<h2 style=" margin-top: 0; color:
+									{% if item.rating > 7%}
+										green
+									{% elif item.rating > 4 %}
+										yellow
+									{% else %}
+										red
+									{% endif %}">{{item.rating}}</h2> / 10
+								</a>
+							</div>
+							<div class="col-sm-8">
+								<h3 style="margin-top:0; width: 150%; color: gray;">
+									Similarity Score: {{item.simscore}}</h3>
+							</div>
+						</div>
 						<br>
 						<p style="color:gray">{{item.eps}} Episodes</p>
 						&emsp;
@@ -200,7 +208,7 @@
 						<br>
 						<br>
 						<p>{{item.description}}</p>
-						<p>{{item.simscore}}</p>
+
 					</div>
 				</div>
 			</div>
