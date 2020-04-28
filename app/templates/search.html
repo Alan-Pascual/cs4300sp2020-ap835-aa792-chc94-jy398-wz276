@@ -191,7 +191,12 @@
 						{% endif %}
 						{% endfor %}
 						</h5>
-						<!-- {{item.studio}} -->
+						<br>
+						<p style="color:gray">Studio:
+						{% for g in item.studio %} {{g}}{% if not loop.last %},
+						{% endif %}
+						{% endfor %}
+						</p>
 						<br>
 						<br>
 						<p>{{item.description}}</p>
