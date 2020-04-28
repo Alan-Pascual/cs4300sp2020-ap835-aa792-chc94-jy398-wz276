@@ -11,6 +11,8 @@ from scipy.sparse.linalg import svds
 from sklearn.preprocessing import normalize
 import re
 import requests
+import pickle
+import time
 
 project_name = "Games2Anime: Anime Recommendations Based on Game Preferences"
 net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffrey Yao (jy398), Wenjia Zhang (wz276)"
@@ -24,6 +26,8 @@ min_dfVal, max_dfVal, kVal = 5, .85, 200
 default_weight = 1
 penalize_weight = 1
 
+debug = False
+
 def createModel(file):
     with open(file) as f:
             raw_docs = json.loads(f.readlines()[0])
@@ -35,22 +39,31 @@ def createModel(file):
             reviews += review['content']
         documents.append( (anime['title'], anime['description'], reviews, anime['image_url'], anime['promo_url'], anime['mal_id'], anime['rating'], anime['number_eps'], [genre_dict[x] for x in anime["genres"]], [x if x != "" else "No Studio Found" for x in anime["studios"]])   )
 
-    np.random.shuffle(documents)
     return documents
 
 documents = createModel('.'+os.path.sep+'anime_data1.json')
-
 print("JSON Loaded", len(documents))
 
-vectorizer = TfidfVectorizer(stop_words = 'english', max_df = max_dfVal, min_df = min_dfVal)
-my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
+word_to_index, words_compressed, docs_compressed = None, None, None
 
-words_compressed, _, docs_compressed = svds(my_matrix, k=kVal) 
-docs_compressed = docs_compressed.transpose()
+if debug:
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_df = max_dfVal, min_df = min_dfVal)
+    my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
+    words_compressed, _, docs_compressed = svds(my_matrix, k=kVal) 
+    docs_compressed = docs_compressed.transpose()
+    word_to_index = vectorizer.vocabulary_
 
-word_to_index = vectorizer.vocabulary_
+    with open('word_to_index.pkl', 'wb') as f:
+        pickle.dump(word_to_index, f)
+    np.save('docs_compressed', docs_compressed)  
+    np.save('words_compressed', words_compressed)  
+else:
+    with open('word_to_index.pkl', 'rb') as f:
+        word_to_index = pickle.load(f)
+    words_compressed = np.load('words_compressed.npy')
+    docs_compressed = np.load('docs_compressed.npy')
+
 index_to_word = {i:t for t,i in word_to_index.items()}
-
 words_compressed = normalize(words_compressed, axis = 1)
 
 def closest_words(word_in, k = 10):
