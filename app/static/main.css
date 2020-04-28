@@ -19,7 +19,7 @@ text-align:center;
 padding:10px;
 }
 .global-search .form-control {
-width:500px;
+width:90%;
 }
 .global-search * {
 display:inline-block;
@@ -88,7 +88,7 @@ input[type=submit] {
   color: #444;
   cursor: pointer;
   padding: 18px;
-  width: 400pt;
+  width: 100%;
   border: none;
   text-align: center;
   outline: none;
@@ -97,12 +97,11 @@ input[type=submit] {
 }
 .active, .accordion:hover {
   background-color: #ccc;
-  width: 400pt;
+  width: 100%;
 }
 .panel {
   margin: 0 auto;
   display: block;
-  width: 400pt;
   text-align: middle;
   background-color: white;
   overflow: hidden;

@@ -3,12 +3,12 @@
 	<link rel="stylesheet" href="/static/bootstrap.min.css">
 	<link rel="stylesheet" href="/static/main.css">
 </head>
-<body style="background-image: url('/static/img/bg2.png');
+<body style="background-image: url('/static/img/bg1.png');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: 100% 100%;
 	margin-top: -7%;">
-	<div style="position: relative; top: -2%; left: 16.08%; width: 69.7%; height: 75.5%;overflow-y: scroll;overflow-x: hidden;">
+	<div style="position: relative; top: -6.5%; left: 16.08%; width: 69.7%; height: 76.5%;overflow-y: scroll;overflow-x: hidden;">
 	<form autocomplete="off" class="form-inline global-search">
 		<!-- <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
 			G
@@ -151,7 +151,7 @@
 		autocomplete(document.getElementById("input"), games);
 	</script>
 
-	<form class="form-inline global-search">
+	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
 		<h4>{{output_message}}</h4>
 		{% if data %}
 		<br>
@@ -163,13 +163,14 @@
 		</button>
 		<div class="panel">
 			<div class="row">
-				<div class="col-sm-6">
+				<br>
+				<div class="col-sm-4">
 					<IMG src={{item.picture}}>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-8">
 					<div style="text-align: left;">
 						<a href="{{item.website}}">
-						<h2 style="color: 
+						<h2 style=" margin-top: 0; color: 
 						{% if item.rating > 7%}
 							green
 						{% elif item.rating > 4 %}
