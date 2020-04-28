@@ -151,7 +151,7 @@ def getAnimeList(game, gameList, id=False):
         return "No Game Found", "No Game Name"
         
     animeList = []
-    #animeCount = []
+    animeCount = []
     
     #Tokenize the Description
     desc = desc.lower().split()
@@ -168,11 +168,11 @@ def getAnimeList(game, gameList, id=False):
                 for i, animeClosest in zip(range(len(animeList)), animeList): 
                     if animeClosest[0] == anime[0]: #found anime
                         animeList[i][1] += weight * anime[1] #Weight * Similarity
-                        #animeCount[i][1] += 1 #Count of Anime
+                        animeCount[i][1] += 1 #Count of Anime
                         found = True
                 if not found:
                     animeList.append([anime[0], anime[1]])
-                    #animeCount.append([anime[0], 1])
+                    animeCount.append([anime[0], 1])
     '''
     weight = 2
     for tag in tags:
@@ -194,16 +194,20 @@ def getAnimeList(game, gameList, id=False):
     #for i, anime in zip(range(len(animeList)), animeList): 
     #    anime[1] = anime[1] / animeCount[i][1] 
     #print(animeList)
+    
+    weighting = max[x[1] for x in animeCount]
+    
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
-    final_list = [x[0] for x in final_list]
+    final_anime = [x[0] for x in final_list]
+    final_scores = [x[1]/weighting for x in final_list
             
-    return final_list[:5], gameName
+    return final_anime[:5], gameName, final_scores[:5]
 
-def getAnimeInfo(AnimeName):
+def getAnimeInfo(AnimeName, AnimeScore):
     record = []
     for anime in documents:
         if AnimeName == anime[0]:
-            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9]]
+            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], AnimeScore]
             break
     return record
     
@@ -222,7 +226,7 @@ def search():
         output_message = ''
     else:
         try:
-            closestAnime, gameName = getAnimeList(query, gameList)
+            closestAnime, gameName, animeSimScores = getAnimeList(query, gameList)
             output_message = gameName
 
             if closestAnime == "No Game Found":
@@ -230,8 +234,8 @@ def search():
                 output_message = "Could not find game on Steam"
             else:
                 info_anime = []
-                for anime in closestAnime:
-                    info_anime.append(getAnimeInfo(anime))
+                for anime, score in zip(closestAnime, animeSimScores):
+                    info_anime.append(getAnimeInfo(anime, score))
                 
                 #Logs
                 print("USER QUERY =", query)
@@ -239,7 +243,7 @@ def search():
 
                 data = []
                 for anime in info_anime:
-                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8]))
+                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8],simscore=anime[9]))
         except:
             print("Unexpected error:", sys.exc_info())
             data = []
