@@ -207,7 +207,7 @@ def getAnimeInfo(AnimeName, AnimeScore):
     record = []
     for anime in documents:
         if AnimeName == anime[0]:
-            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], AnimeScore]
+            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], str(round(AnimeScore*100,2)) + "%"]
             break
     return record
     
@@ -228,7 +228,7 @@ def search():
         try:
             closestAnime, gameName, animeSimScores = getAnimeList(query, gameList)
             output_message = gameName
-            print(closestAnime, animeSimScores)
+            
             if closestAnime == "No Game Found":
                 data = []
                 output_message = "Could not find game on Steam"
