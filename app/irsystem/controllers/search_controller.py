@@ -73,9 +73,7 @@ def readGames(file):
         raw_docs = json.loads(f.readlines()[0])
     documents = []
     for game in raw_docs:
-        print(game)
-        print(game[1])
-        documents.append(game['name'])
+        documents.append(raw_docs[game]['name'])
 
     return documents
 
