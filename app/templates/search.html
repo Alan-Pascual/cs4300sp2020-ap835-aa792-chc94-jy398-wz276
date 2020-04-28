@@ -226,6 +226,7 @@
 		function toggleAccordion(elements) {
 			var i;
 			elements[0].nextElementSibling.style.display = "block"
+			elements[0].classList.toggle("active");
 			for (i = 0; i < elements.length; i++) {
 				elements[i].addEventListener("click", function() {
 					this.classList.toggle("active");
