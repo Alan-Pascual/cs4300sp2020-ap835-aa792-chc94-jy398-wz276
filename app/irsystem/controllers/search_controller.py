@@ -68,6 +68,22 @@ def closest_project_to_word(word_in, k = 5):
 
 print("Model Trained")
 
+def readGames(file):
+    with open(file) as f:
+        raw_docs = json.loads(f.readlines()[0])
+    documents = []
+    for game in raw_docs:
+        print(game)
+        print(game[1])
+        documents.append(game['name'])
+
+    return documents
+
+
+print("Games File Loaded")
+#Get list of game names for autocomplete
+autocompleteGamesList = readGames('.' + os.path.sep + 'gamesList.json');
+
 def getGames():
     url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
     r = requests.get(url)
@@ -210,9 +226,6 @@ def getAnimeInfo(AnimeName, AnimeScore):
             record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], str(round(AnimeScore*100,2)) + "%"]
             break
     return record
-    
-#Get list of game names for autocomplete
-autocompleteGamesList = [x for x in sorted(list(zip(*gameList))[1]) if "soundtrack" not in x.lower() and "dlc" not in x.lower()]
     
 print("All methods and data has been loaded sucessfully:")
 print("JSON Anime:", len(documents))
