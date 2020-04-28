@@ -35,7 +35,7 @@
 
          <br><br>
 
-         <div class="autocomplete" style="width:500px;">
+         <div class="autocomplete" style="width:50%;">
          	<input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
          </div>
          <button type="submit" class="btn btn-info"> Go! </button>
@@ -55,6 +55,8 @@
 	    	  	currentFocus = -1;
 	    	  	/*create a DIV element that will contain the items (values):*/
 	    	  	a = document.createElement("DIV");
+				a.style.width = "90%"
+				a.style.left = "5%"
 	    	  	a.setAttribute("id", this.id + "autocomplete-list");
 	    	  	a.setAttribute("class", "autocomplete-items");
 	    	  	/*append the DIV element as a child of the autocomplete container:*/
