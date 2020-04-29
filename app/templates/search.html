@@ -60,6 +60,11 @@
 	    	  	a.setAttribute("id", this.id + "autocomplete-list");
 	    	  	a.setAttribute("class", "autocomplete-items");
 	    	  	/*append the DIV element as a child of the autocomplete container:*/
+	    	  	//Val Changes
+	    	  	val = val.trim()
+	    	  	var re = new RegExp();
+	    	  	val = val.replace("'","&#39");
+	    	  	var regEx = new RegExp(val, "ig");
 	    	  	this.parentNode.appendChild(a);
 	    	  	count = 0;
 	    	  	/*for each item in the array...*/
@@ -69,8 +74,7 @@
 	    	  			/*create a DIV element for each matching element:*/
 	    	  			b = document.createElement("DIV");
 	    	  			/*make the matching letters bold:*/
-	    	  			val = val.trim()
-	    	  			var regEx = new RegExp(val, "ig");
+	    	  			arr[i] = arr[i].replace("'","&#39");
 	    	  			temp = arr[i].substring(arr[i].search(regEx),arr[i].search(regEx)+val.length);
 	    	  			b.innerHTML = arr[i].replace(regEx,"<strong>" + temp + "</strong>");
 	    	  			/*insert a input field that will hold the current array item's value:*/
