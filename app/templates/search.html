@@ -244,7 +244,7 @@
 				</div>
 				<div class="col-sm-8">
 					<div style="text-align: left;">
-						<div class="row">
+						<div class="row" style="width: 100%;">
 							<div class="col-sm-4">
 								<h2 style=" margin-top: 0; color:
 								{% if item.rating > 7%}
@@ -255,8 +255,8 @@
 									red
 								{% endif %}">{{item.rating}}</h2> / 10
 							</div>
-							<div class="col-sm-8">
-								<h3 style="margin-top:0; width: 150%; color: gray;">
+							<div class="col-sm-8" style="text-align: right;">
+								<h3 style="margin-top:0; color: gray;">
 									Similarity Score: {{item.simscore}}</h3>
 							</div>
 						</div>
