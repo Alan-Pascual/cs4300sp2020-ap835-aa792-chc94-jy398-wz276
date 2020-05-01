@@ -28,7 +28,9 @@
     	                                         <span style="color: #34A853; ">  S  </span>-->
 		 <!-- </h1> -->
 		 <br>
-		 <IMG src="/static/img/logo.png">
+		 <a href="/">
+			<IMG src="/static/img/logo.png">
+		 </a>
 		 <br>
 		 <br>
          <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
@@ -36,11 +38,52 @@
          <br><br>
 
          <div class="autocomplete" style="width:50%;">
-         	<input id="input" type="text" name="search" class="form-control" placeholder="Your game here">
+         	<input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;">
+         	<input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
          </div>
          <button type="submit" class="btn btn-info"> Go! </button>
+         <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam Game Input</button>
      </form>
      <!-- Scripts -->
+	 <script type="text/javascript"> 
+        function swapInput() { 
+            if (document.getElementById("input").style.display == "none")	{
+				document.getElementById("input").style.display = "inline";
+				document.getElementById("steam-input").style.display = "none";
+				replaceButtonText("swapButton", "Swap to Steam ID Input")
+			} else {
+				document.getElementById("input").style.display = "none";
+				document.getElementById("steam-input").style.display = "inline";
+				replaceButtonText("swapButton", "Swap to Steam Game Input")
+			}			
+        } 
+    </script>
+	<SCRIPT LANGUAGE="JavaScript">
+	<!--
+	function replaceButtonText(buttonId, text)
+	{
+	  if (document.getElementById)
+	  {
+		var button=document.getElementById(buttonId);
+		if (button)
+		{
+		  if (button.childNodes[0])
+		  {
+			button.childNodes[0].nodeValue=text;
+		  }
+		  else if (button.value)
+		  {
+			button.value=text;
+		  }
+		  else //if (button.innerHTML)
+		  {
+			button.innerHTML=text;
+		  }
+		}
+	  }
+	}
+	//-->
+	</SCRIPT>
      <script type="text/javascript">
      	function autocomplete(inp, arr) {
 	    	  /*the autocomplete function takes two arguments,
@@ -160,7 +203,22 @@
 	</script>
 
 	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
-		<h4>{{output_message}}</h4>
+		{% if output_message.link %}
+		<a href="{{output_message.link}}" target="_blank">
+		<h3>{{output_message.message}}</h3>
+		</a>
+		{% else %}
+		<h3>{{output_message.message}}</h3>
+		{% endif %}
+		<br>
+		{% if output_message.genres %}
+		<h4>Genres: {{output_message.genres}}</h4>
+		{% endif %}
+		
+		{% if output_message.desc %}
+		<h4>{{output_message.desc}}</h4>
+		{% endif %}
+		
 		{% if data %}
 		<br>
 		<br>
@@ -173,13 +231,15 @@
 			<div class="row">
 				<br>
 				<div class="col-sm-4">
+				<a href="{{item.website}}" target="_blank">
 					<IMG src={{item.picture}}>
+				</a>
 				</div>
 				<div class="col-sm-8">
 					<div style="text-align: left;">
 						<div class="row">
 							<div class="col-sm-4">
-								<a href="{{item.website}}">
+								<a href="{{item.website}}" target="_blank">
 									<h2 style=" margin-top: 0; color:
 									{% if item.rating > 7%}
 										green

@@ -1,0 +1,94 @@
+<html>
+<head>
+	<link rel="stylesheet" href="/static/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/main.css">
+</head>
+<body style="background-image: url('/static/img/bg.png');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+	margin-top: -7%;">
+	<div style="position: absolute; top: 0px; height: 100%; width: 100%">
+	<div style="position: relative; top: 7.65%; left: 16.08%; width: 69.7%; height: 63.5%;overflow-y: scroll;overflow-x: hidden;">
+	<form autocomplete="off" class="form-inline global-search">
+		<!-- <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+			G
+			<span style="color: #EA4335; ">  A  </span>
+			<span style="color: #FBBC05; ">  M  </span>
+			E
+			<span style="color: #34A853; ">  S  </span>
+			<span style="color: #EA4335; ">  2  </span>
+			<span style="color: #FBBC05; ">  A  </span>
+			<span style="color: #EA4335; ">  N  </span>
+			I
+			<span style="color: #34A853; ">  M  </span>
+			<span style="color: #EA4335; ">  E  </span> -->
+    	        <!--<span style="color: #FBBC05; ">  E  </span>
+    	                                         R
+    	                                         <span style="color: #34A853; ">  S  </span>-->
+		 <!-- </h1> -->
+		 <br>
+		 <a href="/">
+			<IMG src="/static/img/logo.png">
+		 </a>
+		 <br>
+		 <br>
+         <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
+
+         <br><br>
+
+	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
+		<h3>XD</h3>
+		<button class="accordion" type="button" style="text-align:center;">
+			<h3>How does it work?</h3>
+		</button>
+		<div class="panel">
+			<div class="row">
+				<br>
+				<div class="col-sm-8">
+					<div style="text-align: left;">
+						<div class="row">
+							<div class="col-sm-4">
+								<a href="{{item.website}}" target="_blank">
+									<h2 style=" margin-top: 0; color:red">XD</h2> / 10
+								</a>
+							</div>
+						</div>
+						<br>
+						<p>This is how it works</p>
+					</div>
+				</div>
+			</div>
+			<br>
+		</div>
+		<br>
+		<br>
+	</form>
+	</div>
+	</div>
+	<script>
+		//Accordion script
+		function toggleAccordion(elements) {
+			var i;
+			elements[0].nextElementSibling.style.display = "block"
+			elements[0].classList.toggle("active");
+			for (i = 0; i < elements.length; i++) {
+				elements[i].addEventListener("click", function() {
+					this.classList.toggle("active");
+					var panel = this.nextElementSibling;
+					if (panel.style.display === "block") {
+						panel.style.display = "none";
+					} else {
+						panel.style.display = "block";
+					}
+				});
+			}
+		}
+		toggleAccordion(document.getElementsByClassName("accordion"));
+	</script>
+</body>
+<footer style="position: fixed; left: 0; bottom: 0%; width: 100%; text-align: center;">
+	<p align="center", style="color: white;text-align:center">Projct</p>
+	<p align="center", style="color: white;text-align:center">asdff</p>
+</footer>
+</html>

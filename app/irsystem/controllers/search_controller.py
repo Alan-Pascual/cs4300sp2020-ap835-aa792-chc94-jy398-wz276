@@ -84,17 +84,17 @@ print("Model Trained")
 def readGames(file):
     with open(file) as f:
         raw_docs = json.loads(f.readlines()[0])
-    documents = []
-    for game in raw_docs:
-        documents.append(raw_docs[game]['name'])
+        
+    return raw_docs
+    
+steamGamesList = readGames('.' + os.path.sep + 'gamesList.json');
+print("GameList File Loaded")
 
-    return documents
-
-
-print("Games File Loaded")
 #Get list of game names for autocomplete
-autocompleteGamesList = readGames('.' + os.path.sep + 'gamesList.json');
+autocompleteGamesList = [steamGamesList[x]['name'] for x in steamGamesList.keys()]
+print("Autocomplete Populated")
 
+#Get all games using Steam API
 def getGames():
     url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
     r = requests.get(url)
@@ -108,7 +108,8 @@ def getGames():
     return tupleList
 
 gameList = None
-while True:
+#Set to True to reactivate and remove the reassignment of gameList
+while False:
     gameList = getGames() #Run this only once please
     if len(gameList) > 0:
         print("gameList Loaded", len(gameList))
@@ -116,6 +117,9 @@ while True:
     else:
         print("Gamelist is NOT populated, trying again", len(gameList))
 
+gameList = [(int(x), steamGamesList[x]['name']) for x in steamGamesList.keys()]
+
+#Find similar names in the game list
 def getSimilarNames(gamesList, query : str):
     similarNames = []
     for (appId, name) in gamesList:
@@ -132,47 +136,157 @@ def getSimilarNames(gamesList, query : str):
 def remove_tags(text):
     return TAG_RE.sub('', text)
 
+#Use Steam API to get game description
 def getGamesDescription(id):
     url = "https://store.steampowered.com/api/appdetails?appids=" + str(id)
     r = requests.get(url)
     data = r.json()
     if (data[str(id)]['success']):
         if data[str(id)]['data']['type'] == 'game':
-            return remove_tags(data[str(id)]['data']['detailed_description'])
+            #return remove_tags(data[str(id)]['data']['detailed_description'])
+            return data[str(id)]['data']['short_description']
         else:
             return "Not Valid"
     else:
         return "Not Valid"
         
+#Use Steam Spy to get get game tags
 def getGameTags(id):
     url = "https://steamspy.com/api.php?request=appdetails&appid=" + str(id)
     r = requests.get(url)
-    print(r)
+    #print(r)
     data = r.json()
     return data["tags"].keys()[:3]
-
-def getAnimeList(game, gameList, id=False):
+    
+#Get most recent Steam Games
+def getRecentSteamGames(steamID):
+    url = "http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=29312C7491002C407BB6EC6AB7634995&steamid=" + steamID + "&format=json"
+    r = requests.get(url)
+    data = r.json()
+    l = []
+    for game in data["response"]["games"]:
+        l.append(game['name'])
+    return l
+    
+def getSteamID(steamID):
+    try:
+        if int(steamID).bit_length() == 63:
+            return steamID
+    except:
+        url = "https://steamid.xyz/" + steamID
+        r = requests.get(url)
+        htmltext = r.text
+        a = re.search(r"profiles\/([\d]+)\"", htmltext)
+        return (a.group()[:-1]).split('/')[1]
+    
+    
+#Main Method using SteamID
+def getAnimeListSteam(steamGames, gameList):
     desc = ""
+    gameID = ""
     gameName = ""
+    gameLink = ""
     tags = ""
-    if id:
-        desc = getGamesDescription(game)
-        gameName = "You entered the ID so you know this"
-    else:
+    
+    for game in steamGames:
         gameIDs = getSimilarNames(gameList, game)
-        #print(gameIDs)
         if len(gameIDs) == 0:
             return "No Game Found", "No Game Name"
         else:
             for ID in gameIDs:
-                output = getGamesDescription(ID[0])
+                #output = getGamesDescription(ID[0])
+                output = remove_tags(steamGamesList[str(ID[0])]['desc'])
                 if output == "Not Valid":
                     continue
                 else:
-                    desc = output
-                    gameName = ID[1]
-                    #tags = getGameTags(ID[0])
+                    desc += output + " "
+                    gameName += game + " "
+                    gameID += str(ID[0]) + " "
+                    gameLink = "https://store.steampowered.com/app/" + str(ID[0])
                     break
+    
+    if desc == "":
+        return "No Game Found", "No Game Name"
+    print(desc)
+    print(gameName)
+        
+    animeList = []
+    animeCount = []
+    
+    #Tokenize the Description
+    desc = desc.lower().split()
+    
+    for word in desc:
+        weight = default_weight #Set weight
+        if word.lower() in penalize_words_list: #If word in penalize list
+            weight = penalize_weight #penalize the weight
+            
+        word_list = closest_project_to_word(word.lower(), 5) #Get Anime
+        if word_list[0][0] != "Not in vocab.": #word_list[0][0]
+            for anime in word_list: #for each anime in list of anime
+                found = False
+                for i, animeClosest in zip(range(len(animeList)), animeList): 
+                    if animeClosest[0] == anime[0]: #found anime
+                        animeList[i][1] += weight * anime[1] #Weight * Similarity
+                        animeCount[i][1] += 1 #Count of Anime
+                        found = True
+                if not found:
+                    animeList.append([anime[0], anime[1]])
+                    animeCount.append([anime[0], 1])
+    '''
+    weight = 2
+    for tag in tags:
+        tag_words = closest_words(tag, 5)
+        if tag_words[0][0] != "Not in Vocab":
+            for word in tag_words:
+                word_list = closest_project_to_word(word.lower(), 5)
+                if word_list[0][0] != "Not in vocab.":
+                    for anime in word_list: #for each anime in list of anime
+                        found = False
+                        for i, animeClosest in zip(range(len(animeList)), animeList): 
+                            if animeClosest[0] == anime[0]: #found anime
+                                animeList[i][1] += weight*anime[1]
+                                found = True
+                        if not found:
+                            animeList.append([anime[0], weight*anime[1]])
+    '''  
+    #print(animeList)
+    #for i, anime in zip(range(len(animeList)), animeList): 
+    #    anime[1] = anime[1] / animeCount[i][1] 
+    #print(animeList)
+    
+    weighting = max([x[1] for x in animeCount])
+    
+    final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
+    final_anime = [x[0] for x in final_list]
+    final_scores = [x[1]/weighting for x in final_list]
+            
+    return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
+
+
+#Main method
+def getAnimeList(game, gameList):
+    desc = ""
+    gameID = 0
+    gameName = ""
+    gameLink = ""
+    tags = ""
+    
+    gameIDs = getSimilarNames(gameList, game)
+    if len(gameIDs) == 0:
+        return "No Game Found", "No Game Name"
+    else:
+        for ID in gameIDs:
+            #output = getGamesDescription(ID[0])
+            output = remove_tags(steamGamesList[str(ID[0])]['desc'])
+            if output == "Not Valid":
+                continue
+            else:
+                desc = output
+                gameName = ID[1]
+                gameID = str(ID[0])
+                gameLink = "https://store.steampowered.com/app/" + str(ID[0])
+                break
     
     if desc == "":
         return "No Game Found", "No Game Name"
@@ -228,7 +342,7 @@ def getAnimeList(game, gameList, id=False):
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
             
-    return final_anime[:5], gameName, final_scores[:5]
+    return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
 
 def getAnimeInfo(AnimeName, AnimeScore):
     record = []
@@ -245,17 +359,25 @@ print("Steam Games:", len(gameList))
 @irsystem.route('/', methods=['GET'])
 def search():
     query = request.args.get('search')
-    if not query:
+    steamID = request.args.get('steam-input')
+    if not query and not steamID:
         data = []
-        output_message = ''
+        output_message = dict(message="")
     else:
         try:
-            closestAnime, gameName, animeSimScores = getAnimeList(query, gameList)
-            output_message = gameName
+            if steamID: #Steam ID takes precedence
+                steamID = getSteamID(steamID.strip())
+                steamUserGames = getRecentSteamGames(steamID.strip())
+                closestAnime, animeSimScores, gameName, gameLink, gameID = getAnimeListSteam(steamUserGames, gameList)
+                output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames))
+                #print(steamUserGames)
+            else:
+                closestAnime, animeSimScores, gameName, gameLink, gameID = getAnimeList(query, gameList)
+                output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']))
             
             if closestAnime == "No Game Found":
                 data = []
-                output_message = "Could not find game on Steam"
+                output_message = dict(message="Could not find the game on Steam. Try another search!")
             else:
                 info_anime = []
                 for anime, score in zip(closestAnime, animeSimScores):
@@ -271,7 +393,7 @@ def search():
         except:
             print("Unexpected error:", sys.exc_info())
             data = []
-            output_message = "Something went wrong, try another query"
+            output_message = dict(message="Something went wrong! Try another search!")
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=autocompleteGamesList)
 
