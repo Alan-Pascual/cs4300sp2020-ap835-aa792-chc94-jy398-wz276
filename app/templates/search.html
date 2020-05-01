@@ -231,24 +231,22 @@
 			<div class="row">
 				<br>
 				<div class="col-sm-4">
-				<a href="{{item.website}}" target="_blank">
 					<IMG src={{item.picture}}>
-				</a>
+					<br>
+					<h4>See on <a href="{{item.website}}" target="_blank">My Anime List</a>!</h4>
 				</div>
 				<div class="col-sm-8">
 					<div style="text-align: left;">
 						<div class="row">
 							<div class="col-sm-4">
-								<a href="{{item.website}}" target="_blank">
-									<h2 style=" margin-top: 0; color:
-									{% if item.rating > 7%}
-										green
-									{% elif item.rating > 4 %}
-										yellow
-									{% else %}
-										red
-									{% endif %}">{{item.rating}}</h2> / 10
-								</a>
+								<h2 style=" margin-top: 0; color:
+								{% if item.rating > 7%}
+									green
+								{% elif item.rating > 4 %}
+									yellow
+								{% else %}
+									red
+								{% endif %}">{{item.rating}}</h2> / 10
 							</div>
 							<div class="col-sm-8">
 								<h3 style="margin-top:0; width: 150%; color: gray;">
@@ -258,7 +256,7 @@
 						<br>
 						<p style="color:gray">{{item.eps}} Episodes</p>
 						&emsp;
-						<h5 style="color:cornflowerblue;">Tags: 
+						<h5 style="color:Coral;">Tags:
 						{% for g in item.genre %} {{g}}{% if not loop.last %},
 						{% endif %}
 						{% endfor %}
