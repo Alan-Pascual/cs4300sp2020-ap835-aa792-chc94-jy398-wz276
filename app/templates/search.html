@@ -42,11 +42,12 @@
          	<input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
          </div>
          <button type="submit" class="btn btn-info"> Go! </button>
-         <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam Game Input</button>
+         <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
+				 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">Get Random Game</button>
      </form>
      <!-- Scripts -->
-	 <script type="text/javascript"> 
-        function swapInput() { 
+	 <script type="text/javascript">
+        function swapInput() {
             if (document.getElementById("input").style.display == "none")	{
 				document.getElementById("input").style.display = "inline";
 				document.getElementById("steam-input").style.display = "none";
@@ -55,9 +56,15 @@
 				document.getElementById("input").style.display = "none";
 				document.getElementById("steam-input").style.display = "inline";
 				replaceButtonText("swapButton", "Swap to Steam Game Input")
-			}			
-        } 
+			}
+        }
     </script>
+		<script type="text/javascript">
+					function fillRandomGame(){
+						var randomGames = {{ random_list|tojson }};
+						document.getElementById("input").value = randomGames[Math.floor(Math.random() * 100)];
+					}
+		</script>
 	<SCRIPT LANGUAGE="JavaScript">
 	<!--
 	function replaceButtonText(buttonId, text)
@@ -214,11 +221,11 @@
 		{% if output_message.genres %}
 		<h4>Genres: {{output_message.genres}}</h4>
 		{% endif %}
-		
+
 		{% if output_message.desc %}
 		<h4>{{output_message.desc}}</h4>
 		{% endif %}
-		
+
 		{% if data %}
 		<br>
 		<br>
