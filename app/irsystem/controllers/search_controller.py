@@ -1,4 +1,4 @@
-from . import *  
+from . import *
 from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 
@@ -13,6 +13,7 @@ import re
 import requests
 import pickle
 import time
+import random
 
 project_name = "Games2Anime: Anime Recommendations Based on Game Preferences"
 net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffrey Yao (jy398), Wenjia Zhang (wz276)"
@@ -49,14 +50,14 @@ word_to_index, words_compressed, docs_compressed = None, None, None
 if debug:
     vectorizer = TfidfVectorizer(stop_words = 'english', max_df = max_dfVal, min_df = min_dfVal)
     my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
-    words_compressed, _, docs_compressed = svds(my_matrix, k=kVal) 
+    words_compressed, _, docs_compressed = svds(my_matrix, k=kVal)
     docs_compressed = docs_compressed.transpose()
     word_to_index = vectorizer.vocabulary_
 
     with open('word_to_index.pkl', 'wb') as f:
         pickle.dump(word_to_index, f)
-    np.save('docs_compressed', docs_compressed)  
-    np.save('words_compressed', words_compressed)  
+    np.save('docs_compressed', docs_compressed)
+    np.save('words_compressed', words_compressed)
 else:
     with open('word_to_index.pkl', 'rb') as f:
         word_to_index = pickle.load(f)
@@ -84,9 +85,9 @@ print("Model Trained")
 def readGames(file):
     with open(file) as f:
         raw_docs = json.loads(f.readlines()[0])
-        
+
     return raw_docs
-    
+
 steamGamesList = readGames('.' + os.path.sep + 'gamesList.json');
 print("GameList File Loaded")
 
@@ -125,13 +126,22 @@ def getSimilarNames(gamesList, query : str):
     for (appId, name) in gamesList:
         if query.lower() == name.lower():
             similarNames += [(appId, name)]
-            
+
     if len(similarNames) == 0:
         for (appId, name) in gamesList:
             if query.lower() in name.lower():
                 similarNames += [(appId, name)]
-                
+
     return np.array(similarNames)
+
+def getRandomGames():
+    url = "https://steamspy.com/api.php?request=top100forever"
+    r = requests.get(url)
+    data = r.json()
+    names = [x['name'] for x in data.values()]
+    return names
+
+randomGamesList = getRandomGames()
 
 def remove_tags(text):
     return TAG_RE.sub('', text)
@@ -149,7 +159,7 @@ def getGamesDescription(id):
             return "Not Valid"
     else:
         return "Not Valid"
-        
+
 #Use Steam Spy to get get game tags
 def getGameTags(id):
     url = "https://steamspy.com/api.php?request=appdetails&appid=" + str(id)
@@ -157,7 +167,7 @@ def getGameTags(id):
     #print(r)
     data = r.json()
     return data["tags"].keys()[:3]
-    
+
 #Get most recent Steam Games
 def getRecentSteamGames(steamID):
     url = "http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=29312C7491002C407BB6EC6AB7634995&steamid=" + steamID + "&format=json"
@@ -167,7 +177,7 @@ def getRecentSteamGames(steamID):
     for game in data["response"]["games"]:
         l.append(game['name'])
     return l
-    
+
 def getSteamID(steamID):
     try:
         if int(steamID).bit_length() == 63:
@@ -178,8 +188,8 @@ def getSteamID(steamID):
         htmltext = r.text
         a = re.search(r"profiles\/([\d]+)\"", htmltext)
         return (a.group()[:-1]).split('/')[1]
-    
-    
+
+
 #Main Method using SteamID
 def getAnimeListSteam(steamGames, gameList):
     desc = ""
@@ -187,7 +197,7 @@ def getAnimeListSteam(steamGames, gameList):
     gameName = ""
     gameLink = ""
     tags = ""
-    
+
     for game in steamGames:
         gameIDs = getSimilarNames(gameList, game)
         if len(gameIDs) == 0:
@@ -204,28 +214,28 @@ def getAnimeListSteam(steamGames, gameList):
                     gameID += str(ID[0]) + " "
                     gameLink = "https://store.steampowered.com/app/" + str(ID[0])
                     break
-    
+
     if desc == "":
         return "No Game Found", "No Game Name"
     print(desc)
     print(gameName)
-        
+
     animeList = []
     animeCount = []
-    
+
     #Tokenize the Description
     desc = desc.lower().split()
-    
+
     for word in desc:
         weight = default_weight #Set weight
         if word.lower() in penalize_words_list: #If word in penalize list
             weight = penalize_weight #penalize the weight
-            
+
         word_list = closest_project_to_word(word.lower(), 5) #Get Anime
         if word_list[0][0] != "Not in vocab.": #word_list[0][0]
             for anime in word_list: #for each anime in list of anime
                 found = False
-                for i, animeClosest in zip(range(len(animeList)), animeList): 
+                for i, animeClosest in zip(range(len(animeList)), animeList):
                     if animeClosest[0] == anime[0]: #found anime
                         animeList[i][1] += weight * anime[1] #Weight * Similarity
                         animeCount[i][1] += 1 #Count of Anime
@@ -243,24 +253,24 @@ def getAnimeListSteam(steamGames, gameList):
                 if word_list[0][0] != "Not in vocab.":
                     for anime in word_list: #for each anime in list of anime
                         found = False
-                        for i, animeClosest in zip(range(len(animeList)), animeList): 
+                        for i, animeClosest in zip(range(len(animeList)), animeList):
                             if animeClosest[0] == anime[0]: #found anime
                                 animeList[i][1] += weight*anime[1]
                                 found = True
                         if not found:
                             animeList.append([anime[0], weight*anime[1]])
-    '''  
+    '''
     #print(animeList)
-    #for i, anime in zip(range(len(animeList)), animeList): 
-    #    anime[1] = anime[1] / animeCount[i][1] 
+    #for i, anime in zip(range(len(animeList)), animeList):
+    #    anime[1] = anime[1] / animeCount[i][1]
     #print(animeList)
-    
+
     weighting = max([x[1] for x in animeCount])
-    
+
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
-            
+
     return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
 
 
@@ -271,7 +281,7 @@ def getAnimeList(game, gameList):
     gameName = ""
     gameLink = ""
     tags = ""
-    
+
     gameIDs = getSimilarNames(gameList, game)
     if len(gameIDs) == 0:
         return "No Game Found", "No Game Name"
@@ -287,26 +297,26 @@ def getAnimeList(game, gameList):
                 gameID = str(ID[0])
                 gameLink = "https://store.steampowered.com/app/" + str(ID[0])
                 break
-    
+
     if desc == "":
         return "No Game Found", "No Game Name"
-        
+
     animeList = []
     animeCount = []
-    
+
     #Tokenize the Description
     desc = desc.lower().split()
-    
+
     for word in desc:
         weight = default_weight #Set weight
         if word.lower() in penalize_words_list: #If word in penalize list
             weight = penalize_weight #penalize the weight
-            
+
         word_list = closest_project_to_word(word.lower(), 5) #Get Anime
         if word_list[0][0] != "Not in vocab.": #word_list[0][0]
             for anime in word_list: #for each anime in list of anime
                 found = False
-                for i, animeClosest in zip(range(len(animeList)), animeList): 
+                for i, animeClosest in zip(range(len(animeList)), animeList):
                     if animeClosest[0] == anime[0]: #found anime
                         animeList[i][1] += weight * anime[1] #Weight * Similarity
                         animeCount[i][1] += 1 #Count of Anime
@@ -324,24 +334,24 @@ def getAnimeList(game, gameList):
                 if word_list[0][0] != "Not in vocab.":
                     for anime in word_list: #for each anime in list of anime
                         found = False
-                        for i, animeClosest in zip(range(len(animeList)), animeList): 
+                        for i, animeClosest in zip(range(len(animeList)), animeList):
                             if animeClosest[0] == anime[0]: #found anime
                                 animeList[i][1] += weight*anime[1]
                                 found = True
                         if not found:
                             animeList.append([anime[0], weight*anime[1]])
-    '''  
+    '''
     #print(animeList)
-    #for i, anime in zip(range(len(animeList)), animeList): 
-    #    anime[1] = anime[1] / animeCount[i][1] 
+    #for i, anime in zip(range(len(animeList)), animeList):
+    #    anime[1] = anime[1] / animeCount[i][1]
     #print(animeList)
-    
+
     weighting = max([x[1] for x in animeCount])
-    
+
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
-            
+
     return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
 
 def getAnimeInfo(AnimeName, AnimeScore):
@@ -351,7 +361,7 @@ def getAnimeInfo(AnimeName, AnimeScore):
             record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], str(round(AnimeScore*100,2)) + "%"]
             break
     return record
-    
+
 print("All methods and data has been loaded sucessfully:")
 print("JSON Anime:", len(documents))
 print("Steam Games:", len(gameList))
@@ -360,6 +370,7 @@ print("Steam Games:", len(gameList))
 def search():
     query = request.args.get('search')
     steamID = request.args.get('steam-input')
+    isRandom = request.args.get('random-input')
     if not query and not steamID:
         data = []
         output_message = dict(message="")
@@ -374,7 +385,6 @@ def search():
             else:
                 closestAnime, animeSimScores, gameName, gameLink, gameID = getAnimeList(query, gameList)
                 output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']))
-            
             if closestAnime == "No Game Found":
                 data = []
                 output_message = dict(message="Could not find the game on Steam. Try another search!")
@@ -382,7 +392,7 @@ def search():
                 info_anime = []
                 for anime, score in zip(closestAnime, animeSimScores):
                     info_anime.append(getAnimeInfo(anime, score))
-                
+
                 #Logs
                 print("USER QUERY =", query)
                 print("RETURNED:", [anime[0] for anime in info_anime])
@@ -395,7 +405,4 @@ def search():
             data = []
             output_message = dict(message="Something went wrong! Try another search!")
 
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=autocompleteGamesList)
-
-
-
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=autocompleteGamesList, random_list=randomGamesList)
