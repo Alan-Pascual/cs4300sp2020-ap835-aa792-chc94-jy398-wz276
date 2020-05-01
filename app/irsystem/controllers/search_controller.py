@@ -13,7 +13,7 @@ import re
 import requests
 import pickle
 import time
-import random
+from flask import send_from_directory
 
 project_name = "Games2Anime: Anime Recommendations Based on Game Preferences"
 net_id = "Amrit Amar (aa792),  Carina Cheng (chc94), Alan Pascual (ap835), Jeffrey Yao (jy398), Wenjia Zhang (wz276)"
@@ -406,3 +406,7 @@ def search():
             output_message = dict(message="Something went wrong! Try another search!")
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, game_list=autocompleteGamesList, random_list=randomGamesList)
+
+@irsystem.route('/about')
+def about():
+    return send_from_directory('templates', 'about.html')
