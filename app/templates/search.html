@@ -84,7 +84,7 @@
 			cb.name = "genres";
 			cb.value = key;
 			cb.id = "genre" + key;
-			cb.checked = false;
+			cb.checked = true;
 
 			var lb = document.createElement("label");
 			lb.htmlFor = "genre" + key;
@@ -260,13 +260,49 @@
 		autocomplete(document.getElementById("input"), games);
 	</script>
 
+	<script type="text/javascript">
+		function toggleKeywords(){
+			console.log('here');
+			var keywordsDiv = document.getElementById("keywordsDiv");
+			var keywordsBreak = document.getElementById("keywordsBreak");
+			var keywordsBtn = document.getElementById("keywordsButton");
+
+			if (keywordsDiv.style.display == "none") {
+				keywordsDiv.style.display = "block";
+				keywordsBreak.style.display = "block";
+				keywordsBtn.innerHTML = "Hide Keywords";
+			} else {
+				keywordsDiv.style.display = "none";
+				keywordsBreak.style.display = "none";
+				keywordsBtn.innerHTML = "Show Keywords";
+			}
+		}
+	</script>
+
 	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
 		{% if output_message.link %}
-		<a href="{{output_message.link}}" target="_blank">
-		<h3>{{output_message.message}}</h3>
+		<div class="row" style="width: 100%; height: auto">
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6" style="margin-top: 0; text-align:center">
+				<a href="{{output_message.link}}" target="_blank">
+				<h3 style="margin-top: 5">{{output_message.message}}</h3></a>
+			</div>
+			<div class="col-sm-3" style="text-align:right; margin-top: 0">
+				<button type="button" id="keywordsButton" class="keywordsBtn" onclick="toggleKeywords()">Show Keywords</button>
+			</div>
+		</div>
 		</a>
 		{% else %}
 		<h3>{{output_message.message}}</h3>
+
+		{% endif %}
+		{% if output_message.topkwords %}
+			<div id="keywordsBreak" style="display: none">
+				<br>
+			</div>
+			<div id="keywordsDiv" style="display: none" class="keywordsPanel">
+				<h4 style="margin-top: 0">Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
+			</div>
 		{% endif %}
 		<br>
 		{% if output_message.genres %}
@@ -276,11 +312,6 @@
 		{% if output_message.desc %}
 		<h4>{{output_message.desc}}</h4>
 		{% endif %}
-		
-		{% if output_message.topkwords %}
-		<h4>Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
-		{% endif %}
-
 		{% if data %}
 		<br>
 		<br>

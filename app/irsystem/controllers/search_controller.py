@@ -93,7 +93,7 @@ print("GameList File Loaded")
 
 #Get list of game names for autocomplete
 autocompleteGamesList = [steamGamesList[x]['name'] for x in steamGamesList.keys()]
-autocompleteGamesList = sorted(autocompleteGamesList, key=len) 
+autocompleteGamesList = sorted(autocompleteGamesList, key=len)
 print("Autocomplete Populated")
 
 #Get all games using Steam API
@@ -330,7 +330,7 @@ def getAnimeList(game, gameList):
                     animeCount.append([anime[0], 1])
                     anime2word[anime[0]] = dict()
                     anime2word[anime[0]][word] = 1
-                    
+
     '''
     weight = 2
     for tag in tags:
@@ -358,7 +358,7 @@ def getAnimeList(game, gameList):
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
-    
+
     topKeywords = set()
     anime2weight = dict()
     for k1,v_ in anime2word.items():
@@ -367,9 +367,9 @@ def getAnimeList(game, gameList):
         for k2, v in sortedV_.items():
             anime2weight[k1][k2] = v / (sum([v for k,v in sortedV_.items()]))
             topKeywords.add(k2)
-        
+
     anime2keywordWeights = [(x, anime2weight[x]) for x in final_anime[:5]]
-    
+
     animeKeywords = []
     #topKeywords = set()
     for anime, score in anime2keywordWeights:
@@ -380,7 +380,7 @@ def getAnimeList(game, gameList):
             ak = dict(keyword=word,score=round(prob*100,2))
             al.append(ak)
         animeKeywords.append(al)
-            
+
     topKeywords = list(topKeywords)
 
     return final_anime[:5], final_scores[:5], gameName, gameLink, gameID, topKeywords, animeKeywords
@@ -416,10 +416,10 @@ def search():
             else:
                 closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
                 output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
-                
+
             #print(topKeywords)
             #print(animeKeywords)
-                
+
             if closestAnime == "No Game Found":
                 data = []
                 output_message = dict(message="Could not find the game on Steam. Try another search!")
