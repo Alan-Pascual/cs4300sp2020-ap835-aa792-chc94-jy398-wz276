@@ -44,8 +44,65 @@
          <button type="submit" class="btn btn-info"> Go! </button>
          <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
 				 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">Get Random Game</button>
-     </form>
+
+				 <div class="multiselect">
+				     <div class="selectBox" onclick="showCheckboxes()">
+				       <select>
+				         <option>Filter Genres</option>
+				       </select>
+				       <div class="overSelect"></div>
+				     </div>
+				     <div id="checkboxes">
+				       <label for="one">
+				         <!-- <input type="checkbox" id="one" />First checkbox</label>
+				       <label for="two">
+				         <input type="checkbox" id="two" />Second checkbox</label>
+				       <label for="three">
+				         <input type="checkbox" id="three" />Third checkbox</label> -->
+				     </div>
+				   </div>
+
+		 </form>
      <!-- Scripts -->
+<script type="text/javascript">
+	var expanded = false;
+
+	function showCheckboxes() {
+	  var checkboxes = document.getElementById("checkboxes");
+	  if (!expanded) {
+	    checkboxes.style.display = "block";
+	    expanded = true;
+	  } else {
+	    checkboxes.style.display = "none";
+	    expanded = false;
+	  }
+	}
+
+	var genreDict = {1: 'Action', 2: 'Adventure', 3: 'Cars',4: 'Comedy',5: 'Dementia',6: 'Demons',7: 'Mystery',8: 'Drama', 9: 'Ecchi',10:'Fantasy',11:'Game',13:'Historical',14:'Horror',15:'Kids',16:'Magic',17:'Martial Arts',18:'Mecha',19:'Music',20:'Parody',21:'Samurai',22:'Romance',23:'School',24:'Sci-Fi',25:'Shoujo',26:'Shoujo Ai',27:'Shounen',28:'Shounen Ai',29:'Space',30:'Sports',31:'Super Power',32:'Vampire',35:'Harem',36:'Slice of Life', 37:'Supernatural', 38:'Military', 39:'Police',40:'Psychological',41:'Thriller',42:'Seinen',43:'Josei'}
+
+	function createGenreList(){
+		console.log('called');
+		var checkboxDiv = document.getElementById("checkboxes");
+
+		for (var key in genreDict) {
+			var cb = document.createElement("input");
+			cb.type = "checkbox";
+			cb.name = "genres";
+			cb.value = key;
+			cb.id = "genre" + key;
+			cb.checked = false;
+
+			var lb = document.createElement("label");
+			lb.htmlFor = "genre" + key;
+			lb.appendChild(document.createTextNode(genreDict[key]));
+
+			checkboxDiv.appendChild(cb);
+			checkboxDiv.appendChild(lb);
+		}
+	}
+	createGenreList();
+
+</script>
 	 <script type="text/javascript">
         function swapInput() {
             if (document.getElementById("input").style.display == "none")	{
