@@ -93,6 +93,7 @@ print("GameList File Loaded")
 
 #Get list of game names for autocomplete
 autocompleteGamesList = [steamGamesList[x]['name'] for x in steamGamesList.keys()]
+autocompleteGamesList = sorted(autocompleteGamesList, key=len) 
 print("Autocomplete Populated")
 
 #Get all games using Steam API
