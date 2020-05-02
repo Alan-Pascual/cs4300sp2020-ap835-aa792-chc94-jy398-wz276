@@ -93,6 +93,7 @@ print("GameList File Loaded")
 
 #Get list of game names for autocomplete
 autocompleteGamesList = [steamGamesList[x]['name'] for x in steamGamesList.keys()]
+autocompleteGamesList.append("STEAMID:<Your 64-bit Steam ID>")
 autocompleteGamesList = sorted(autocompleteGamesList, key=len)
 print("Autocomplete Populated")
 
@@ -400,22 +401,22 @@ print("Steam Games:", len(gameList))
 @irsystem.route('/', methods=['GET'])
 def search():
     query = request.args.get('search')
-    steamID = request.args.get('steam-input')
+    #steamID = request.args.get('steam-input')
     isRandom = request.args.get('random-input')
-    if not query and not steamID:
+    if not query:
         data = []
         output_message = dict(message="")
     else:
         try:
-            if steamID: #Steam ID takes precedence
-                steamID = getSteamID(steamID.strip())
-                steamUserGames = getRecentSteamGames(steamID.strip())
-                closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeListSteam(steamUserGames, gameList)
-                output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames),topkwords=", ".join(topKeywords))
+            #if steamID: #Steam ID takes precedence
+            #    steamID = getSteamID(steamID.strip())
+            #    steamUserGames = getRecentSteamGames(steamID.strip())
+            #    closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeListSteam(steamUserGames, gameList)
+            #    output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames),topkwords=", ".join(topKeywords))
                 #print(steamUserGames)
-            else:
-                closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
-                output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
+            #else:
+            closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
+            output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
 
             #print(topKeywords)
             #print(animeKeywords)
