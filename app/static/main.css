@@ -89,7 +89,7 @@ input[type=submit] {
   background-color: #eee;
   color: #444;
   cursor: pointer;
-  padding: 18px;
+  padding-bottom: 18px;
   width: 100%;
   border: none;
   text-align: center;
@@ -98,7 +98,7 @@ input[type=submit] {
   transition: 0.4s;
 }
 .active, .accordion:hover {
-  background-color: #ccc;
+  background-color: rgb(225, 225, 225);
   width: 100%;
 }
 .panel {
@@ -122,6 +122,11 @@ a:hover {
 
 a:active {
   text-decoration: none;
+}
+
+.about:hover{
+  text-decoration: none;
+  color: lightskyblue;
 }
 
 /* Keywords Button */
