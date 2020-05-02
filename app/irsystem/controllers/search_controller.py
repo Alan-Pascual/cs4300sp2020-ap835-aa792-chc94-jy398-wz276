@@ -25,7 +25,7 @@ penalize_words_list = ['game', 'gameplay']
 #Hyperparameters
 min_dfVal, max_dfVal, kVal = 5, .85, 200
 default_weight = 1
-penalize_weight = 1
+penalize_weight = .6
 
 debug = False
 
@@ -93,6 +93,7 @@ print("GameList File Loaded")
 
 #Get list of game names for autocomplete
 autocompleteGamesList = [steamGamesList[x]['name'] for x in steamGamesList.keys()]
+autocompleteGamesList = sorted(autocompleteGamesList, key=len) 
 print("Autocomplete Populated")
 
 #Get all games using Steam API
@@ -301,6 +302,7 @@ def getAnimeList(game, gameList):
 
     animeList = []
     animeCount = []
+    anime2word = dict()
 
     #Tokenize the Description
     desc = desc.lower().split()
@@ -318,10 +320,17 @@ def getAnimeList(game, gameList):
                     if animeClosest[0] == anime[0]: #found anime
                         animeList[i][1] += weight * anime[1] #Weight * Similarity
                         animeCount[i][1] += 1 #Count of Anime
+                        if word in anime2word[anime[0]]:
+                            anime2word[anime[0]][word] += 1
+                        else:
+                            anime2word[anime[0]][word] = 1
                         found = True
                 if not found:
                     animeList.append([anime[0], anime[1]])
                     animeCount.append([anime[0], 1])
+                    anime2word[anime[0]] = dict()
+                    anime2word[anime[0]][word] = 1
+                    
     '''
     weight = 2
     for tag in tags:
@@ -349,14 +358,38 @@ def getAnimeList(game, gameList):
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
+    
+    topKeywords = set()
+    anime2weight = dict()
+    for k1,v_ in anime2word.items():
+        anime2weight[k1] = dict()
+        sortedV_ = {k: v for k, v in sorted(v_.items(), key=lambda item: item[1], reverse=True)}
+        for k2, v in sortedV_.items():
+            anime2weight[k1][k2] = v / (sum([v for k,v in sortedV_.items()]))
+            topKeywords.add(k2)
+        
+    anime2keywordWeights = [(x, anime2weight[x]) for x in final_anime[:5]]
+    
+    animeKeywords = []
+    #topKeywords = set()
+    for anime, score in anime2keywordWeights:
+        al = []
+        ak = dict()
+        for word, prob in score.items():
+            #topKeywords.add(word)
+            ak = dict(keyword=word,score=round(prob*100,2))
+            al.append(ak)
+        animeKeywords.append(al)
+            
+    topKeywords = list(topKeywords)
 
-    return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
+    return final_anime[:5], final_scores[:5], gameName, gameLink, gameID, topKeywords, animeKeywords
 
-def getAnimeInfo(AnimeName, AnimeScore):
+def getAnimeInfo(AnimeName, AnimeScore, AnimeKeywords):
     record = []
     for anime in documents:
         if AnimeName == anime[0]:
-            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], round(AnimeScore*100,2)]
+            record = [anime[0], anime[1], anime[3].split('?')[0], anime[4].split('?')[0], anime[5] , anime[6], anime[7], anime[8], anime[9], round(AnimeScore*100,2), AnimeKeywords]
             break
     return record
 
@@ -377,19 +410,23 @@ def search():
             if steamID: #Steam ID takes precedence
                 steamID = getSteamID(steamID.strip())
                 steamUserGames = getRecentSteamGames(steamID.strip())
-                closestAnime, animeSimScores, gameName, gameLink, gameID = getAnimeListSteam(steamUserGames, gameList)
-                output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames))
+                closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeListSteam(steamUserGames, gameList)
+                output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames),topkwords=", ".join(topKeywords))
                 #print(steamUserGames)
             else:
-                closestAnime, animeSimScores, gameName, gameLink, gameID = getAnimeList(query, gameList)
-                output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']))
+                closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
+                output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
+                
+            #print(topKeywords)
+            #print(animeKeywords)
+                
             if closestAnime == "No Game Found":
                 data = []
                 output_message = dict(message="Could not find the game on Steam. Try another search!")
             else:
                 info_anime = []
-                for anime, score in zip(closestAnime, animeSimScores):
-                    info_anime.append(getAnimeInfo(anime, score))
+                for anime, score, kw in zip(closestAnime, animeSimScores, animeKeywords):
+                    info_anime.append(getAnimeInfo(anime, score, kw))
 
                 #Logs
                 print("USER QUERY =", query)
@@ -397,7 +434,8 @@ def search():
 
                 data = []
                 for anime in info_anime:
-                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8],simscore=anime[9]))
+                    print(anime[10])
+                    data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8],simscore=anime[9],keywords=anime[10]))
         except:
             print("Unexpected error:", sys.exc_info())
             data = []
