@@ -42,18 +42,18 @@
          <br><br>
 
          <div class="autocomplete" style="width:50%;">
-			 <input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;">
-         	 <input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
+			 <input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;width:70%;">
+         	 <input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;width:70%;">
 
 			 <button id="genreButton" class="btn btn-info" type="button" onclick="showCheckboxes()">▼</button>
 
-			 <br>
-			 <div class="multiselect">
-				 <div id="checkboxes" style="display:none;">
-				 </div>
-			 </div>
 
 		 </div>
+		<br>
+		<div class="multiselect" style="width:50%;">
+			<div id="checkboxes" style="display:none; padding-left: 2rem;">
+			</div>
+		</div>
 		 <br><br>
          <button type="submit" class="btn btn-info"> Go! </button>
          <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
@@ -82,7 +82,7 @@
 
 		for (var key in genreDict) {
 			var dv = document.createElement("div");
-			dv.className = "custom-control custom-checkbox";
+			dv.className = "custom-control-inline custom-checkbox";
 			var cb = document.createElement("input");
 			dv.appendChild(cb);
 			cb.type = "checkbox";
