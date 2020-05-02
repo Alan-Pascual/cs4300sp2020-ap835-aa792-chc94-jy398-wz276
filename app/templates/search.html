@@ -10,7 +10,10 @@
 	margin-top: -7%;">
 	<div style="position: absolute; top: 0px; height: 100%; width: 100%">
 	<div style="position: relative; top: 7.65%; left: 16.08%; width: 69.7%; height: 63.5%;overflow-y: scroll;overflow-x: hidden;">
-	<form autocomplete="off" class="form-inline global-search">
+		<div style="padding:20px; text-align: right;">
+			<a class="about" href="/about">About</a>
+		</div>
+		<form autocomplete="off" class="form-inline global-search">
 		<!-- <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
 			G
 			<span style="color: #EA4335; ">  A  </span>
@@ -27,20 +30,22 @@
     	                                         R
     	                                         <span style="color: #34A853; ">  S  </span>-->
 		 <!-- </h1> -->
+		 <div style="padding-top: 10%;">
+			<a href="/">
+				<IMG src="/static/img/logo.png" style="max-width: 80%; height: auto;">
+			</a>
+		</div>
 		 <br>
-		 <a href="/">
-			<IMG src="/static/img/logo.png">
-		 </a>
 		 <br>
-		 <br>
-         <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
+         <p style="font-size: 20px;color: gray;">Anime Recommendations Based on Game Preferences</p>
 
          <br><br>
 
          <div class="autocomplete" style="width:50%;">
          	<input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;">
          	<input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
-         </div>
+		 </div>
+		 <br><br>
          <button type="submit" class="btn btn-info"> Go! </button>
          <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
 				 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">Get Random Game</button>
@@ -390,6 +395,5 @@
 <footer style="position: fixed; left: 0; bottom: 0%; width: 100%; text-align: center;">
 	<p align="center", style="color: white;text-align:center">Project Name: {{ name }}</p>
 	<p align="center", style="color: white;text-align:center">Student Name: {{ netid }}</p>
-	<p><a href="/about">about</a></p>
 </footer>
 </html>
