@@ -373,12 +373,12 @@
 								</h5>
 							</div>
 						</div>
-						<br>
-						<p style="font-size: 15px; color:gray; padding-top:10px"><b>Studio:</b>
+						<h5 style="color:gray;"><b>Studio:</b>
 							{% for g in item.studio %} {{g}}{% if not loop.last %},
 							{% endif %}
 							{% endfor %}
-							</p>
+						</h5>
+						<br>
 						<h5 style="color:gray; margin-top:5px; padding-bottom:10px">
 							<b>Genres:</b>
 							{% for g in item.genre %} {{g}}{% if not loop.last %},
