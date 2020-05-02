@@ -403,6 +403,7 @@ def search():
     query = request.args.get('search')
     #steamID = request.args.get('steam-input')
     isRandom = request.args.get('random-input')
+    checks = request.args.getlist('genres')
     if not query:
         data = []
         output_message = dict(message="")
@@ -430,12 +431,12 @@ def search():
                     info_anime.append(getAnimeInfo(anime, score, kw))
 
                 #Logs
-                print("USER QUERY =", query)
-                print("RETURNED:", [anime[0] for anime in info_anime])
+                #print("USER QUERY =", query)
+                #print("RETURNED:", [anime[0] for anime in info_anime])
 
                 data = []
                 for anime in info_anime:
-                    print(anime[10])
+                    #print(anime[10])
                     data.append(dict(name=anime[0],description=anime[1],picture=anime[2],video=anime[3],website="https://myanimelist.net/anime/"+str(anime[4]),rating=anime[5],eps=anime[6],genre=anime[7],studio=anime[8],simscore=anime[9],keywords=anime[10]))
         except:
             print("Unexpected error:", sys.exc_info())
