@@ -225,6 +225,10 @@
 		{% if output_message.desc %}
 		<h4>{{output_message.desc}}</h4>
 		{% endif %}
+		
+		{% if output_message.topkwords %}
+		<h4>Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
+		{% endif %}
 
 		{% if data %}
 		<br>
@@ -266,6 +270,11 @@
 										red
 									{% endif %}">{{item.simscore}}%</h3>
 							</div>
+							<p>Top words:
+							{% for g in item.keywords %} {{g.keyword}} - {{g.score}}%{% if not loop.last %},
+							{% endif %}
+							{% endfor %}
+							</p>
 						</div>
 						<br>
 						<p style="color:gray">{{item.eps}} Episodes</p>
