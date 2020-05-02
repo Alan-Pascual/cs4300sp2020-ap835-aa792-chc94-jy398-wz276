@@ -9,7 +9,7 @@
 	background-size: 100% 100%;
 	margin-top: -7%;">
 	<div style="position: absolute; top: 0px; height: 100%; width: 100%">
-	<div style="position: relative; top: 7.65%; left: 16.08%; width: 69.7%; height: 63.5%;overflow-y: scroll;overflow-x: hidden;">
+	<div style="position: relative; top: 8.4%; left: 16.08%; width: 69.7%; height: 69.7%;overflow-y: scroll;overflow-x: hidden;">
 		<div style="padding:20px; text-align: right;">
 			<a class="about" href="/about">About</a>
 		</div>
@@ -267,13 +267,49 @@
 		autocomplete(document.getElementById("input"), games);
 	</script>
 
+	<script type="text/javascript">
+		function toggleKeywords(){
+			console.log('here');
+			var keywordsDiv = document.getElementById("keywordsDiv");
+			var keywordsBreak = document.getElementById("keywordsBreak");
+			var keywordsBtn = document.getElementById("keywordsButton");
+
+			if (keywordsDiv.style.display == "none") {
+				keywordsDiv.style.display = "block";
+				keywordsBreak.style.display = "block";
+				keywordsBtn.innerHTML = "Hide Keywords";
+			} else {
+				keywordsDiv.style.display = "none";
+				keywordsBreak.style.display = "none";
+				keywordsBtn.innerHTML = "Show Keywords";
+			}
+		}
+	</script>
+
 	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
 		{% if output_message.link %}
-		<a href="{{output_message.link}}" target="_blank">
-		<h3>{{output_message.message}}</h3>
+		<div class="row" style="width: 100%; height: auto">
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6" style="margin-top: 0; text-align:center">
+				<a href="{{output_message.link}}" target="_blank">
+				<h3 style="margin-top: 5">{{output_message.message}}</h3></a>
+			</div>
+			<div class="col-sm-3" style="text-align:right; margin-top: 0">
+				<button type="button" id="keywordsButton" class="keywordsBtn" onclick="toggleKeywords()">Show Keywords</button>
+			</div>
+		</div>
 		</a>
 		{% else %}
 		<h3>{{output_message.message}}</h3>
+		<br>
+		{% endif %}
+		{% if output_message.topkwords %}
+			<div id="keywordsBreak" style="display: none; cursor: default;">
+				<br>
+			</div>
+			<div id="keywordsDiv" style="display: none; cursor: default;" class="keywordsPanel " >
+				<h4 style="margin-top: 0; cursor: default;">Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
+			</div>
 		{% endif %}
 		<br>
 		{% if output_message.genres %}
@@ -283,11 +319,6 @@
 		{% if output_message.desc %}
 		<h4>{{output_message.desc}}</h4>
 		{% endif %}
-		
-		{% if output_message.topkwords %}
-		<h4>Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
-		{% endif %}
-
 		{% if data %}
 		<br>
 		<br>
@@ -316,8 +347,10 @@
 								{% else %}
 									red
 								{% endif %}">{{item.rating}}</h2> / 10
+								<br>
+								<p style="font-size: 20px; color:gray;">{{item.eps}} Episodes</p>
 							</div>
-							<div class="col-sm-8" style="text-align: right;margin-top:0;">
+							<div class="col-sm-8" style="text-align: left; margin-top:5px;">
 								<h3 style="margin-top:0; color: gray;">
 									Similarity Score:</h3> <h3 style=" margin-top:0; color:
 									{% if item.simscore > 80 %}
@@ -327,31 +360,34 @@
 									{% else %}
 										red
 									{% endif %}">{{item.simscore}}%</h3>
+								<h5 style=" margin-top:5px; color:
+									{% if item.simscore > 80 %}
+										green
+									{% elif item.simscore > 50 %}
+										orange
+									{% else %}
+										red
+									{% endif %}">
+									<b style="color:gray;">Top words:</b>
+									{% for g in item.keywords %} {{g.keyword}}{% if not loop.last %},
+									{% endif %}
+									{% endfor %}
+								</h5>
 							</div>
-							<p>Top words:
-							{% for g in item.keywords %} {{g.keyword}} - {{g.score}}%{% if not loop.last %},
+						</div>
+						<h5 style="color:gray;"><b>Studio:</b>
+							{% for g in item.studio %} {{g}}{% if not loop.last %},
 							{% endif %}
 							{% endfor %}
-							</p>
-						</div>
-						<br>
-						<p style="color:gray">{{item.eps}} Episodes</p>
-						&emsp;
-						<h5 style="color:Coral;">Tags:
-						{% for g in item.genre %} {{g}}{% if not loop.last %},
-						{% endif %}
-						{% endfor %}
 						</h5>
 						<br>
-						<p style="color:gray">Studio:
-						{% for g in item.studio %} {{g}}{% if not loop.last %},
-						{% endif %}
-						{% endfor %}
-						</p>
-						<br>
-						<br>
+						<h5 style="color:gray; margin-top:5px; padding-bottom:10px">
+							<b>Genres:</b>
+							{% for g in item.genre %} {{g}}{% if not loop.last %},
+							{% endif %}
+							{% endfor %}
+						</h5><br>
 						<p>{{item.description}}</p>
-
 					</div>
 				</div>
 			</div>
