@@ -98,7 +98,7 @@ input[type=submit] {
   transition: 0.4s;
 }
 .active, .accordion:hover {
-  background-color: #ccc;
+  background-color: rgb(225, 225, 225);
   width: 100%;
 }
 .panel {
