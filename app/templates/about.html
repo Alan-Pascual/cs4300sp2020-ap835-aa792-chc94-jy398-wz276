@@ -23,41 +23,75 @@
 			I
 			<span style="color: #34A853; ">  M  </span>
 			<span style="color: #EA4335; ">  E  </span> -->
-    	        <!--<span style="color: #FBBC05; ">  E  </span>
-    	                                         R
-    	                                         <span style="color: #34A853; ">  S  </span>-->
+				<!--<span style="color: #FBBC05; ">  E  </span>
+												 R
+												 <span style="color: #34A853; ">  S  </span>-->
 		 <!-- </h1> -->
-		 <br>
-		 <a href="/">
+		<br>
+		<a href="/">
 			<IMG src="/static/img/logo.png">
-		 </a>
-		 <br>
-		 <br>
-         <p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
+		</a>
+		<br>
+		<br>
+		<p style="font-size: 25px">Anime Recommendations Based on Game Preferences</p>
 
-         <br><br>
+		<br>
+		<div class="row" style="width: 50%">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4"><h4><a href="https://games0anime.herokuapp.com/" target="_blank">First Prototype</a></h4></div>
+			<div class="col-sm-4"><h4><a href="https://games1anime.herokuapp.com/" target="_blank">Second Prototype</a></h4></div>
+			<div class="col-sm-2"></div>
+		</div>
+
+	</form>
 
 	<form class="form-inline global-search" style="width: 90%; padding-left: 10%;">
-		<h3>XD</h3>
+		<h3>FAQ and Website Info</h3>
+		<br>
+		<br>
 		<button class="accordion" type="button" style="text-align:center;">
-			<h3>How does it work?</h3>
+			<h3>What is Games2Anime?</h3>
 		</button>
 		<div class="panel">
 			<div class="row">
 				<br>
+				<div class="col-sm-2"></div>
 				<div class="col-sm-8">
 					<div style="text-align: left;">
-						<div class="row">
-							<div class="col-sm-4">
-								<a href="{{item.website}}" target="_blank">
-									<h2 style=" margin-top: 0; color:red">XD</h2> / 10
-								</a>
-							</div>
-						</div>
-						<br>
-						<p>This is how it works</p>
+						<p>Due to current world events, there have been greater demands for online entertainment.
+							Steam has recently reached a record high for concurrent users; however, there are only
+							so many games on Steam and many gamers may seek to broaden their horizons by watching
+							Japanese animation (anime). But many people might find it difficult to narrow down what
+							anime to watch due to its wide variety of genres and styles. Thus, the goal of our
+							application is to recommend anime to people based on their Steam gaming preferences.
+							By giving our system a game title from Steam, it will return a list of recommended anime
+							based on the similarity in reviews and tags. Each recommendation will also display the
+							general details, trailer video, and MAL link for each suggestion.</p>
 					</div>
 				</div>
+				<div class="col-sm-2"></div>
+			</div>
+			<br>
+		</div>
+		<br>
+		<br>
+		<button class="accordion" type="button" style="text-align:center;">
+			<h3>What do those colors mean?</h3>
+		</button>
+		<div class="panel">
+			<div class="row">
+				<br>
+				<div class="col-sm-2"></div>
+				<div class="col-sm-8">
+					<div style="text-align: left;">
+						<p>When looking at our results you might spot that we assign different colors for anime rating
+						and similarity score based on how high the value is. Similar to most reviewing platforms,
+						we use green for the best, orange for mediocre, and red for anything we would not really recommend.
+						For specific information, our thresholds for anime rating are >7.5 green, >6 for orange and red
+						for anything below. For similarity score, we use >80 green, >50 orange and red for the rest.</p>
+					</div>
+				</div>
+				<div class="col-sm-2"></div>
 			</div>
 			<br>
 		</div>
@@ -70,8 +104,6 @@
 		//Accordion script
 		function toggleAccordion(elements) {
 			var i;
-			elements[0].nextElementSibling.style.display = "block"
-			elements[0].classList.toggle("active");
 			for (i = 0; i < elements.length; i++) {
 				elements[i].addEventListener("click", function() {
 					this.classList.toggle("active");
