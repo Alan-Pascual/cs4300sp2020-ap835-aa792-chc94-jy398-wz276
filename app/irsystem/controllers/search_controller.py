@@ -134,14 +134,12 @@ def getSimilarNames(gamesList, query : str):
 
     return np.array(similarNames)
 
-def getRandomGames():
-    url = "https://steamspy.com/api.php?request=top100forever"
-    r = requests.get(url)
-    data = r.json()
-    names = [x['name'] for x in data.values()]
-    return names
+def getRandomGames(file):
+    with open(file) as f:
+        raw_docs = json.load(f)
+    return raw_docs['top_games']
 
-randomGamesList = getRandomGames()
+randomGamesList = getRandomGames('.'+os.path.sep+'top_games_list.json')
 
 def remove_tags(text):
     return TAG_RE.sub('', text)
