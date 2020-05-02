@@ -302,11 +302,11 @@
 
 		{% endif %}
 		{% if output_message.topkwords %}
-			<div id="keywordsBreak" style="display: none">
+			<div id="keywordsBreak" style="display: none; cursor: default;">
 				<br>
 			</div>
-			<div id="keywordsDiv" style="display: none" class="keywordsPanel">
-				<h4 style="margin-top: 0">Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
+			<div id="keywordsDiv" style="display: none; cursor: default;" class="keywordsPanel " >
+				<h4 style="margin-top: 0; cursor: default;">Keywords we matched on: <i>{{output_message.topkwords}}</i></h4>
 			</div>
 		{% endif %}
 		<br>
