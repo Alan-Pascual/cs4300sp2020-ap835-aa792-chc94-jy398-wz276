@@ -42,25 +42,22 @@
          <br><br>
 
          <div class="autocomplete" style="width:50%;">
-         	<input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;">
-         	<input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
+			 <input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;">
+         	 <input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;">
+
+			 <button id="genreButton" class="btn btn-info" type="button" onclick="showCheckboxes()">▼</button>
+
+			 <br>
+			 <div class="multiselect">
+				 <div id="checkboxes" style="display:none;">
+				 </div>
+			 </div>
+
 		 </div>
 		 <br><br>
          <button type="submit" class="btn btn-info"> Go! </button>
          <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
 				 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">Get Random Game</button>
-
-				 <div class="multiselect">
-				     <div class="selectBox" onclick="showCheckboxes()">
-				       <select>
-				         <option>Filter Genres</option>
-				       </select>
-				       <div class="overSelect"></div>
-				     </div>
-				     <div id="checkboxes">
-				     </div>
-				   </div>
-
 		 </form>
      <!-- Scripts -->
 <script type="text/javascript">
@@ -84,19 +81,24 @@
 		var checkboxDiv = document.getElementById("checkboxes");
 
 		for (var key in genreDict) {
+			var dv = document.createElement("div");
+			dv.className = "custom-control custom-checkbox";
 			var cb = document.createElement("input");
+			dv.appendChild(cb);
 			cb.type = "checkbox";
 			cb.name = "genres";
+			cb.className = "custom-control-input"
 			cb.value = key;
 			cb.id = "genre" + key;
-			cb.checked = false;
+			cb.checked = true;
 
 			var lb = document.createElement("label");
+			dv.appendChild(lb);
 			lb.htmlFor = "genre" + key;
-			lb.appendChild(document.createTextNode(genreDict[key]));
+			lb.className = "custom-control-label"
+			lb.appendChild(document.createTextNode(genreDict[key]+"\u00A0"));
 
-			checkboxDiv.appendChild(cb);
-			checkboxDiv.appendChild(lb);
+			checkboxDiv.appendChild(dv);
 		}
 	}
 	createGenreList();
