@@ -314,8 +314,10 @@
 								{% else %}
 									red
 								{% endif %}">{{item.rating}}</h2> / 10
+								<br>
+								<p style="font-size: 20px; color:gray;">{{item.eps}} Episodes</p>
 							</div>
-							<div class="col-sm-8" style="text-align: right;margin-top:0;">
+							<div class="col-sm-8" style="text-align: left; margin-top:5px;">
 								<h3 style="margin-top:0; color: gray;">
 									Similarity Score:</h3> <h3 style=" margin-top:0; color:
 									{% if item.simscore > 80 %}
@@ -325,31 +327,34 @@
 									{% else %}
 										red
 									{% endif %}">{{item.simscore}}%</h3>
+								<h5 style=" margin-top:5px; color:
+									{% if item.simscore > 80 %}
+										green
+									{% elif item.simscore > 50 %}
+										orange
+									{% else %}
+										red
+									{% endif %}">
+									<b style="color:gray;">Top words:</b>
+									{% for g in item.keywords %} {{g.keyword}}{% if not loop.last %},
+									{% endif %}
+									{% endfor %}
+								</h5>
 							</div>
-							<p>Top words:
-							{% for g in item.keywords %} {{g.keyword}} - {{g.score}}%{% if not loop.last %},
+						</div>
+						<br>
+						<p style="font-size: 15px; color:gray; padding-top:10px"><b>Studio:</b>
+							{% for g in item.studio %} {{g}}{% if not loop.last %},
 							{% endif %}
 							{% endfor %}
 							</p>
-						</div>
-						<br>
-						<p style="color:gray">{{item.eps}} Episodes</p>
-						&emsp;
-						<h5 style="color:Coral;">Tags:
-						{% for g in item.genre %} {{g}}{% if not loop.last %},
-						{% endif %}
-						{% endfor %}
-						</h5>
-						<br>
-						<p style="color:gray">Studio:
-						{% for g in item.studio %} {{g}}{% if not loop.last %},
-						{% endif %}
-						{% endfor %}
-						</p>
-						<br>
-						<br>
+						<h5 style="color:gray; margin-top:5px; padding-bottom:10px">
+							<b>Genres:</b>
+							{% for g in item.genre %} {{g}}{% if not loop.last %},
+							{% endif %}
+							{% endfor %}
+						</h5><br>
 						<p>{{item.description}}</p>
-
 					</div>
 				</div>
 			</div>
