@@ -303,6 +303,7 @@ def getAnimeList(game, gameList):
 
     animeList = []
     animeCount = []
+    anime2word = dict()
 
     #Tokenize the Description
     desc = desc.lower().split()
@@ -320,10 +321,17 @@ def getAnimeList(game, gameList):
                     if animeClosest[0] == anime[0]: #found anime
                         animeList[i][1] += weight * anime[1] #Weight * Similarity
                         animeCount[i][1] += 1 #Count of Anime
+                        if word in anime2word[anime[0]]:
+                            anime2word[anime[0]][word] += 1
+                        else:
+                            anime2word[anime[0]][word] = 1
                         found = True
                 if not found:
                     animeList.append([anime[0], anime[1]])
                     animeCount.append([anime[0], 1])
+                    anime2word[anime[0]] = dict()
+                    anime2word[anime[0]][word] = 1
+                    
     '''
     weight = 2
     for tag in tags:
@@ -351,6 +359,21 @@ def getAnimeList(game, gameList):
     final_list = sorted(animeList, key = lambda x: float(x[1]), reverse = True)
     final_anime = [x[0] for x in final_list]
     final_scores = [x[1]/weighting for x in final_list]
+    
+    anime2weight = dict()
+    for k1,v_ in anime2word.items():
+        anime2weight[k1] = dict()
+        sortedV_ = {k: v for k, v in sorted(v_.items(), key=lambda item: item[1])}
+        for k2, v in sortedV_.items():
+            anime2weight[k1][k2] = v / (sum([v for k,v in sortedV_.items()]))
+        
+    anime2keywordWeights = [(x, anime2weight[x]) for x in final_anime[:5]]
+    print(anime2keywordWeights)
+    
+    topKeywords = [   words.items() for (anime, words) in anime2keywordWeights.items()]
+    
+    #Need: top keywords from game to top 5 anime (add up probabilitity masses? counts?)
+    #Per anime, get top words and send them as a dictionary
 
     return final_anime[:5], final_scores[:5], gameName, gameLink, gameID
 
