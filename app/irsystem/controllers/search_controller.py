@@ -538,3 +538,7 @@ def search():
 @irsystem.route('/about')
 def about():
     return send_from_directory('templates', 'about.html')
+
+@irsystem.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/img', 'favicon.ico')
