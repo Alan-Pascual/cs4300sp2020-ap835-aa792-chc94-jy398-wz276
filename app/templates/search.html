@@ -41,23 +41,20 @@
 
          <br><br>
 
-         <div class="autocomplete" style="width:50%;">
+         <div class="autocomplete" style="width:55%;">
 			 <input id="input" type="text" name="search" class="form-control" placeholder="Start typing a Steam Game..." style="display: inline;width:70%;">
-         	 <input id="steam-input" type="text" name="steam-input" class="form-control" placeholder="Enter your Steam ID from your URL https://steamcommunity.com/id/<THIS>" style="display: none;width:70%;">
-
-			 <button id="genreButton" class="btn btn-info" type="button" onclick="showCheckboxes()">▼</button>
+			 <button id="genreButton" class="DropDownBtn" type="button" onclick="showCheckboxes()">▼</button>
 
 
 		 </div>
 		<br>
-		<div class="multiselect" style="width:50%;">
+		<div class="multiselect" style="width:42.5%;">
 			<div id="checkboxes" style="display:none; padding-left: 2rem;">
 			</div>
 		</div>
 		 <br><br>
-         <button type="submit" class="btn btn-info"> Go! </button>
-         <button id="swapButton" type="button" class="btn btn-info" onclick="swapInput()">Swap to Steam ID Input</button>
-				 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">Get Random Game</button>
+         <button type="submit" class="btn btn-info"> Search </button>
+		 <button id="randomButton" type="button" class="btn btn-info" onclick="fillRandomGame()">I'm Feeling Lucky</button>
 		 </form>
      <!-- Scripts -->
 <script type="text/javascript">
@@ -83,6 +80,7 @@
 		for (var key in genreDict) {
 			var dv = document.createElement("div");
 			dv.className = "custom-control-inline custom-checkbox";
+			dv.style = "padding: .2rem;";
 			var cb = document.createElement("input");
 			dv.appendChild(cb);
 			cb.type = "checkbox";
@@ -163,8 +161,8 @@
 	    	  	currentFocus = -1;
 	    	  	/*create a DIV element that will contain the items (values):*/
 	    	  	a = document.createElement("DIV");
-				a.style.width = "90%"
-				a.style.left = "5%"
+				a.style.width = "69.5%"
+				a.style.left = "11.5%"
 	    	  	a.setAttribute("id", this.id + "autocomplete-list");
 	    	  	a.setAttribute("class", "autocomplete-items");
 	    	  	/*append the DIV element as a child of the autocomplete container:*/

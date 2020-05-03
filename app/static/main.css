@@ -211,6 +211,17 @@ a:active {
   color: #fff;
 }
 
+.DropDownBtn {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+  border: none;
+  padding: 7.5px;
+  border-radius: 4px;
+  font-size: 15px;
+  text-align: center;
+}
+
 /* Multiselect */
 .multiselect {
   width: 200px;
