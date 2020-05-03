@@ -404,6 +404,7 @@ def search():
     #steamID = request.args.get('steam-input')
     isRandom = request.args.get('random-input')
     checks = request.args.getlist('genres')
+    print(checks)
     if not query:
         data = []
         output_message = dict(message="")
@@ -419,9 +420,6 @@ def search():
             closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
             output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
 
-            #print(topKeywords)
-            #print(animeKeywords)
-
             if closestAnime == "No Game Found":
                 data = []
                 output_message = dict(message="Could not find the game on Steam. Try another search!")
@@ -431,8 +429,8 @@ def search():
                     info_anime.append(getAnimeInfo(anime, score, kw))
 
                 #Logs
-                #print("USER QUERY =", query)
-                #print("RETURNED:", [anime[0] for anime in info_anime])
+                print("USER QUERY =", query)
+                print("RETURNED:", [anime[0] for anime in info_anime])
 
                 data = []
                 for anime in info_anime:
