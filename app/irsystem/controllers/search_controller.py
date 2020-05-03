@@ -235,7 +235,7 @@ def getAnimeListSteam(steamGames, gameList, blgenres):
         if word.lower() in penalize_words_list: #If word in penalize list
             weight = penalize_weight #penalize the weight
 
-        word_list = closest_project_to_word(word.lower(), 5) #Get Anime
+        word_list = closest_project_to_word(word.lower(), 7) #Get Anime
         if word_list[0][0] != "Not in vocab.": #word_list[0][0]
             for anime in word_list: #for each anime in list of anime
             
@@ -364,7 +364,7 @@ def getAnimeList(game, gameList, blgenres):
         if word.lower() in penalize_words_list: #If word in penalize list
             weight = penalize_weight #penalize the weight
 
-        word_list = closest_project_to_word(word.lower(), 5) #Get Anime
+        word_list = closest_project_to_word(word.lower(), 7) #Get Anime
         if word_list[0][0] != "Not in vocab.": #word_list[0][0]
             for anime in word_list: #for each anime in list of anime
             
