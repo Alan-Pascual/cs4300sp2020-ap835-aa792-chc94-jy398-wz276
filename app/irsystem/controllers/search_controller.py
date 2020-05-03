@@ -126,6 +126,8 @@ gameList = [(int(x), steamGamesList[x]['name']) for x in steamGamesList.keys()]
 def getSimilarNames(gamesList, query : str):
     similarNames = []
     for (appId, name) in gamesList:
+        if query == name:
+            return np.array([(appId, name)])
         if query.lower() == name.lower():
             similarNames += [(appId, name)]
 
@@ -275,7 +277,7 @@ def getAnimeListSteam(steamGames, gameList):
 
 
 #Main method
-def getAnimeList(game, gameList):
+def getAnimeList(game, gameList, blgenres):
     desc = ""
     gameID = 0
     gameName = ""
@@ -403,8 +405,13 @@ def search():
     query = request.args.get('search')
     #steamID = request.args.get('steam-input')
     isRandom = request.args.get('random-input')
-    checks = request.args.getlist('genres')
-    print(checks)
+    genres = request.args.getlist('genres')
+    blgenres = [ genre_dict[i] for i in genre_dict ]
+
+    for i in range(len(genres)):
+        j = int(genres[i])
+        blgenres.remove(genre_dict[j])
+
     if not query:
         data = []
         output_message = dict(message="")
@@ -417,7 +424,7 @@ def search():
             #    output_message = dict(message="Steam Profile",link="https://steamcommunity.com/profiles/" + steamID,desc="Your most recent games were: " + ", ".join(steamUserGames),topkwords=", ".join(topKeywords))
                 #print(steamUserGames)
             #else:
-            closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList)
+            closestAnime, animeSimScores, gameName, gameLink, gameID, topKeywords, animeKeywords = getAnimeList(query, gameList, blgenres)
             output_message = dict(message=gameName,link=gameLink,desc=getGamesDescription(int(gameID)),genres=", ".join(steamGamesList[gameID]['genre']), topkwords=", ".join(topKeywords))
 
             if closestAnime == "No Game Found":
